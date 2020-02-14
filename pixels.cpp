@@ -31,7 +31,7 @@ int main(int argc, char *argv[]){
    SDL_Rect r;
    
    r.w = 640;
-   r.h = 480;
+   r.h = 360;
       
    window = SDL_CreateWindow("SDL_CreateTexture",
                   SDL_WINDOWPOS_UNDEFINED,
