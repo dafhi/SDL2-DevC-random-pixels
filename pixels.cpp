@@ -30,8 +30,8 @@ int main(int argc, char *argv[]){
    SDL_Event event;
    SDL_Rect r;
    
-   r.w = 1024;
-   r.h = 768;
+   r.w = 640;
+   r.h = 480;
       
    window = SDL_CreateWindow("SDL_CreateTexture",
                   SDL_WINDOWPOS_UNDEFINED,
@@ -80,6 +80,7 @@ int main(int argc, char *argv[]){
          }
       SDL_UnlockSurface(buf);
       SDL_UpdateWindowSurface(window);
+      SDL_Delay(600);
    }
    SDL_DestroyRenderer(renderer);
    SDL_Quit();
