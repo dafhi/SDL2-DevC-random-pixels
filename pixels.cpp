@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
    bool quit = false;
    
    SDL_SetRenderTarget(renderer, NULL);
-   while (!quit) {
+//   while (!quit) {
       
       SDL_PollEvent(&event);
       
@@ -80,8 +80,8 @@ int main(int argc, char *argv[]){
          }
       SDL_UnlockSurface(buf);
       SDL_UpdateWindowSurface(window);
-      SDL_Delay(600);
-   }
+      SDL_Delay(2000);
+//   }
    SDL_DestroyRenderer(renderer);
    SDL_Quit();
    return 0;
