@@ -25,7 +25,6 @@ uint rgb(int r, int g, int b){
 int main(int argc, char *argv[]){
    SDL_Window *window;
    SDL_Renderer *renderer;
-   SDL_Texture *texture;
    SDL_Surface*  buf, surface;
    SDL_Event event;
    SDL_Rect r;
