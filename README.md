@@ -1,7 +1,7 @@
 SDL2 and progressive rendering
 ====================================================================================================
 
-| ![aadot image][aadots]
+| ![dots image][aadots] |
 
-[aadots]:               images/aadots.jpg
+[dots image]:               images/aadots.jpg
 
