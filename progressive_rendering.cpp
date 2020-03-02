@@ -1,39 +1,38 @@
 /* -- Dev-C++     -lmingw32 -lSDL2main -lSDL2
 
-    averaging random pixels over time
+    averaging pixels over time
     
 */
 
-#include "common/general.h"
+#include "common/aadot.h"
 
 int main(int argc, char *argv[]) {
 
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-    SDL_Surface*  buf, surface;
-    SDL_Event event;
+    auto win_scalar = 3;
 
-    auto scale = 3.0;
+    const int winw = 200 * win_scalar;
+    const int winh = 150 * win_scalar;
 
-    const int w = 200 * scale;
-    const int h = 150 * scale;
+    auto scale = .9;
+    
+    const int w = winw * scale;
+    const int h = winh * scale;
 
+    create_window(w,h,1);
+    
     const int ns = 1;
 
-    framebuffer_stuff(w,h)  // progressive_rendering.h
+    update_modulus = 10;
     
-    update_modulus = 15;
-    
-    for (int frame = 0; frame < 10; ++frame) {
-        for (int j = h-1; j >= 0; --j) {
-            more_framebuffer_stuff(h)
+    for (int frame = 0; frame < 15; ++frame) {
+        for (int j = hm; j >= 0; --j) {
+            framebuffer_scanline(j)
             for (int i = 0; i < w; ++i) {
                 vec3 color(0, 0, 0);
                 for (int s = 0; s < ns; ++s) {
                     color += vec3(rnd, rnd, rnd);
                 }
-                /* sum, pixel, and idx_1d from progressive_rendering.h */
-                int value = write_pixel( pixel, sum, color, idx_1d, ns );
+                int value = write_pixel(color, ns); // sqrt, linear: write_pixel_f, write_pixel
             }
             even_more_framebu___you_get_the_point(update_modulus)
         }

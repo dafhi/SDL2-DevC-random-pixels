@@ -7,15 +7,17 @@
 #ifndef VEC3_H
 #define VEC3_H
 
-#include <iostream>
-#include <cmath>
-
 #include "gfx_header.h"
+
+#include <iostream>
 
 class vec3 {
     public:
         vec3() : e{0,0,0} {}
-        vec3(tReal e0, tReal e1, tReal e2) : e{e0, e1, e2} {}
+        vec3(const tReal e0, const tReal e1, const tReal e2) : e{e0, e1, e2} {}
+        vec3(const vec3& a) : e{a[0], a[1], a[2]} {}
+        vec3(vec3& a) : e{a[0], a[1], a[2]} {}
+//        operator uint() const { return rgb_f(e[0], e[1], e[2]); }
 
         tReal x() const { return e[0]; }
         tReal y() const { return e[1]; }
@@ -23,7 +25,7 @@ class vec3 {
 
         vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
         tReal operator[](int i) const { return e[i]; }
-        tReal& operator[](int i) { return e[i]; }
+        //tReal& operator[](int i) { return e[i]; }
 
         vec3& operator+=(const vec3 &v) {
             e[0] += v.e[0];
@@ -31,6 +33,15 @@ class vec3 {
             e[2] += v.e[2];
             return *this;
         }
+        
+#if 1
+        vec3& operator-=(const vec3 &v) {
+            e[0] -= v.e[0];
+            e[1] -= v.e[1];
+            e[2] -= v.e[2];
+            return *this;
+        }
+#endif
 
         vec3& operator*=(const tReal t) {
             e[0] *= t;
@@ -38,11 +49,12 @@ class vec3 {
             e[2] *= t;
             return *this;
         }
-
+        
+#if 0
         vec3& operator/=(const tReal t) {
             return *this *= 1/t;
         }
-
+#endif
         tReal length() const {
             return sqrt(length_squared());
         }
@@ -114,6 +126,48 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
+}
+
+vec3 random_in_unit_sphere() {
+    while (true) {
+        auto p = vec3::random(-1,1);
+        if (p.length_squared() >= 1) continue;
+        return p;
+    }
+}
+
+vec3 random_unit_vector() {
+    auto a = random_double(0, 2*pi);
+    auto z = random_double(-1, 1);
+    auto r = sqrt(1 - z*z);
+    return vec3(r*cos(a), r*sin(a), z);
+}
+
+vec3 random_in_hemisphere(const vec3& normal) {
+    vec3 in_unit_sphere = random_in_unit_sphere();
+    if (dot(in_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+        return in_unit_sphere;
+    else
+        return -in_unit_sphere;
+}
+
+vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2*dot(v,n)*n;
+}
+
+vec3 refract(const vec3& uv, const vec3& n, tReal etai_over_etat) {
+    auto cos_theta = dot(-uv, n);
+    vec3 r_out_parallel =  etai_over_etat * (uv + cos_theta*n);
+    vec3 r_out_perp = -sqrt(1.0 - r_out_parallel.length_squared()) * n;
+    return r_out_parallel + r_out_perp;
+}
+
+vec3 random_in_unit_disk() {
+    while (true) {
+        auto p = vec3(random_double(-1,1), random_double(-1,1), 0);
+        if (p.length_squared() >= 1) continue;
+        return p;
+    }
 }
 
 #endif
