@@ -8,34 +8,35 @@
 
 int main(int argc, char *argv[]) {
 
-    auto win_scalar = 3;
-
+    auto win_scalar = 2;
+    
     const int winw = 200 * win_scalar;
     const int winh = 150 * win_scalar;
 
+    create_window(winw,winh,1);
+    
     auto scale = .9;
     
     const int w = winw * scale;
     const int h = winh * scale;
 
-    create_window(winw,winh,1);
     create_surface(w,h);
-    
+
     const int ns = 1;
 
-    update_modulus = 10;
+//    update_modulus = 10;
     
-    for (int frame = 0; frame < 15; ++frame) {
+    for (int frame = 0; frame < 1; ++frame) {
         for (int j = hm; j >= 0; --j) {
             framebuffer_scanline(j)
-            for (int i = 0; i < w; ++i) {
+            for (int i = 0; i < gw; ++i) {
                 vec3 color(0, 0, 0);
                 for (int s = 0; s < ns; ++s) {
                     color += vec3(rnd, rnd, rnd);
                 }
-                int value = write_pixel(color, ns); // sqrt, linear: write_pixel_f, write_pixel
+                write_pixel(color, _idx++, ns);
             }
-            even_more_framebu___you_get_the_point(update_modulus)
+            even_more_framebu___you_get_the_point(j, update_modulus)
         }
         if (quit) break;
     }

@@ -109,23 +109,21 @@ void create_window(int w, int h, bool manual_additional_surf = false){
 int found_some_color; // no .bmp if all black
 
 
-int write_pixel(vec3 color, const int samps = 1) {
+void write_pixel(vec3 color, const int idx, const int samps = 1) {
 
-    gsum[_idx] += propix(color, samps);
+    gsum[idx] += propix(color, samps);
 
-    int value = gsum[_idx];
-    p32[_idx++] = value;
+//    const int value = gsum[idx];
+//    p32[idx] = value;
 
-    found_some_color += value != 0;  // no .bmp if all black
-    return value;
+    found_some_color += gsum[idx] != 0;  // no .bmp if all black
+//    return value;
 }
 
 
 #define framebuffer_scanline(yy)\
-        _idx = (hm-yy) * pitchBy;\
-        rsrc.y = hm-yy;\
-        rsrc.h = 1;\
-        rdes.h = 1;
+        _idx = (yy) * pitchBy;\
+        rsrc.y = yy;
 
     //std::cout << SDL_GetError();
 
@@ -133,14 +131,18 @@ int write_pixel(vec3 color, const int samps = 1) {
 
 #define even_more_framebu___you_get_the_point(yy,upd_modu)\
         \
-        rdes.y = rsrc.y;\
-        \
+        _idx = (yy) * pitchBy;\
         for (int i = _idx; i < (gw + _idx); ++i) {\
             p32[i] = gsum[i];\
         }\
         \
-        if (gsurf != buf) SDL_BlitScaled(gsurf, &rsrc, buf, &rdes);\
-        if (yy % upd_modu == 0) {\
+        if (gsurf != buf) {\
+            rsrc.h = 1;\
+            rdes.h = 1;\
+            rdes.y = yy;\
+            SDL_BlitScaled(gsurf, &rsrc, buf, &rdes);\
+        }\
+        if (rsrc.y % upd_modu == 0) {\
             SDL_UpdateWindowSurface(window);\
             SDL_Delay(1);\
             SDL_PollEvent(&event);\
@@ -159,7 +161,7 @@ int write_pixel(vec3 color, const int samps = 1) {
 
 
 #define all_black (found_some_color = 0)
-//    if (!all_black && !quit && save_bmp) {\
+//    if (!all_black && !quit && save_bmp) {
 
 
 #define final_framebuff_stuff(delay)\

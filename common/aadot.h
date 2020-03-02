@@ -1,6 +1,4 @@
-/* -- vec3.h
-
-    referended from "Ray Tracing in one Weekend" by Peter Shirley
+/* -- 
 
 */
 

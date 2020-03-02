@@ -48,10 +48,10 @@ int main(int argc, char *argv[]) {
     //camera cam(90, aspect_ratio);
 
     float rad = sqrt(gw * gw + gh * gh) / 99;
-    for (int frame = 499; frame >= 0; --frame) {
-        rad *= .975;
+    for (int frame = 299; frame >= 0; --frame) {
+        rad *= .97;
         rad = ffmax(rad, .7071);
-        float slope = 1/rad;
+        float slope = 4/rad;
         int dots = .45 * (gw * gh) / (pi * rad * rad) + 1;
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;;
         for (int k = 0; k < dots; ++k) {
