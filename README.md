@@ -5,3 +5,6 @@ SDL2 and progressive rendering
 
 [dots image]:               images/aadots.jpg
 
+Includes 3 scenes from "Ray Tracing in one Weekend."
+https://raytracing.github.io/
+

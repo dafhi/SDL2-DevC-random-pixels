@@ -24,9 +24,10 @@ class progressive_pixel {
     operator vec3() { return v / iter; }
     const tReal operator[](int i) const { return v[i]; }
 
-    operator uint() const { const tReal r = 1/iter; return rgb_i(v[0]*r, v[1]*r, v[2]*r); }
-    uint sqr() const { const tReal r = 1/iter; return rgb_f(v[0]*r, v[1]*r, v[2]*r); }
-    
+    // non-gamma
+    //operator uint() const { const tReal r = 1/iter; return rgb_i(v[0]*r, v[1]*r, v[2]*r); }
+    operator uint() const { const tReal r = 1/iter; return rgb_f(v[0]*r, v[1]*r, v[2]*r); }
+
     propix& operator+=(const propix &u) {
         v += u.v;
         iter += u.iter;
@@ -69,19 +70,22 @@ SDL_Rect    rdes, rsrc;
 
 propix      *sum, *sumwin, *gsum;
 uint        *p32;
-int         wm, hm, pitchBy, _idx;
+int         gw, wm;
+int         gh, hm;
+int         pitchBy, _idx;
 int         update_modulus = 3;
 bool        quit = false;
 
 void get_pointers(SDL_Surface* srf) {
-    p32 = (srf == surf) ? (uint *) surf->pixels : (uint *) buf->pixels;
-    gsum = (srf == surf) ? sum : sumwin;
+    gsum = (srf == buf) ? sumwin : sum;
+    p32 = (uint *)srf->pixels;
     pitchBy = srf->pitch / 4;
-    wm = srf->w - 1;
-    hm = srf->h - 1;
+    gw = srf->w;  wm = gw - 1;
+    gh = srf->h;  hm = gh - 1;
     rsrc.w = srf->w;
     rdes = rsrc;
     gsurf = srf;
+    update_modulus = gh;
 }
 
 void create_surface(int ww, int hh){
@@ -116,34 +120,27 @@ int write_pixel(vec3 color, const int samps = 1) {
     return value;
 }
 
-int write_pixel_f(vec3 color, const int samps = 1) {
-
-    gsum[_idx] += propix(color, samps);
-
-    int value = gsum[_idx].sqr();
-    p32[_idx++] = value;
-
-    found_some_color += value != 0;  // no .bmp if all black
-    return value;
-}
-
 
 #define framebuffer_scanline(yy)\
         _idx = (hm-yy) * pitchBy;\
-        rsrc.y = hm-yy;
+        rsrc.y = hm-yy;\
+        rsrc.h = 1;\
+        rdes.h = 1;
 
     //std::cout << SDL_GetError();
 
 //            std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
-//            SDL_UpdateWindowSurface(window);
-//        SDL_UnlockSurface(gsurf);
 
-#define even_more_framebu___you_get_the_point(upd_modu)\
+#define even_more_framebu___you_get_the_point(yy,upd_modu)\
         \
         rdes.y = rsrc.y;\
         \
+        for (int i = _idx; i < (gw + _idx); ++i) {\
+            p32[i] = gsum[i];\
+        }\
+        \
         if (gsurf != buf) SDL_BlitScaled(gsurf, &rsrc, buf, &rdes);\
-        if (j % upd_modu == 0) {\
+        if (yy % upd_modu == 0) {\
             SDL_UpdateWindowSurface(window);\
             SDL_Delay(1);\
             SDL_PollEvent(&event);\
@@ -162,34 +159,43 @@ int write_pixel_f(vec3 color, const int samps = 1) {
 
 
 #define all_black (found_some_color = 0)
+//    if (!all_black && !quit && save_bmp) {\
 
 
 #define final_framebuff_stuff(delay)\
-    if (!all_black && !quit && save_bmp) {\
+    if (!all_black && save_bmp) {\
       SDL_SaveBMP(gsurf, "output.bmp");\
     }\
     \
     SDL_Delay(delay);\
-    SDL_FreeSurface(gsurf);\
+    SDL_FreeSurface(surf);\
     SDL_DestroyWindow(window);\
     SDL_Quit();
 
+void propix_frame() {
+    for (int j = 0; j < gh; j++) {
+        framebuffer_scanline(j)
+        even_more_framebu___you_get_the_point(j, update_modulus)
+    }
+    if (gsurf != buf) {
+        rsrc.y = 0; rsrc.h = gh;
+        rdes = rsrc;
+        SDL_BlitScaled(gsurf, &rsrc, buf, &rdes);
+        SDL_UpdateWindowSurface(window);
+    }
+}
 
 void propix_fill( SDL_Surface* srf,
                   vec3 col,
                   float alpha = 1 ) {
                       
     auto color = propix(col*alpha, alpha);
-
     get_pointers(srf);
-    
-    for (int j = srf->h-1; j >= 0; --j) {
+    for (int j = hm; j >= 0; --j) {
         framebuffer_scanline(j)
-        for (int i = 0; i < srf->w; ++i) {
-            gsum[_idx] = color;
-            p32[_idx++] = sum[_idx];
+        for (int i = _idx; i < gw + _idx; ++i) {
+            gsum[i] = color;
         }
-        even_more_framebu___you_get_the_point(update_modulus)
     }
 }
 

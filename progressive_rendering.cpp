@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
     const int w = winw * scale;
     const int h = winh * scale;
 
-    create_window(w,h,1);
+    create_window(winw,winh,1);
+    create_surface(w,h);
     
     const int ns = 1;
 
