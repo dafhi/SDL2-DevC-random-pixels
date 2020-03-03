@@ -18,8 +18,8 @@ void draw_some_dots(SDL_Surface* srf){
 
     for (int i=0; i<40; ++i){
         float   alpha = 2 * (.5 + rnd);
-        float   rad = (4 + rnd * rnd * 90) * scale;
-        float   slope = 1.5 * (.5 + rnd);
+        float   rad = (4 + rnd * rnd * rnd * 130) * scale;
+        float   slope = 1 * (1 + 2 * rnd * rnd);
         float   j = rnd;
         #define c rnd // j grayscale, rnd color
         aadot::draw(
@@ -36,7 +36,7 @@ void draw_some_stuff(SDL_Surface* srf) {
     update_modulus = gh;
 
 //    SDL_LockSurface(srf);
-        propix_fill(srf, vec3(.4,.7,1)*.5, .1);
+        propix_fill(srf, vec3(.4,.7,1)*.5, .5);
         draw_some_dots(srf);
         p32 = (uint*)srf->pixels;
         p32[50 + 50 * pitchBy] = 0xFFFFFF;
@@ -69,10 +69,6 @@ int main(int argc, char *argv[]) {
     
     draw_some_stuff(gsurf);
 
-    // this works just like SDL_Flip() in SDL 1.2
-    SDL_UpdateWindowSurface(window);
-
-    std::cerr << "\nDone.\n";
     final_framebuff_stuff(2000) // Delay
 
     return 0;

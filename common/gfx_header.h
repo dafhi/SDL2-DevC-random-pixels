@@ -3,7 +3,6 @@
 
 #include "general.h"
 
-#include <limits>
 #include <cmath>
 
 // Constants

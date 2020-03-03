@@ -13,21 +13,22 @@ int main(int argc, char *argv[]) {
     const int winw = 200 * win_scalar;
     const int winh = 150 * win_scalar;
 
-    create_window(winw,winh,1);
-    
+    const int ns = 1;
+
     auto scale = .9;
-    
+
     const int w = winw * scale;
     const int h = winh * scale;
 
-    create_surface(w,h);
+    create_window(winw,winh,1);
+    
+//    create_surface(w,h);
 
-    const int ns = 1;
-
-//    update_modulus = 10;
+    update_modulus = 10;
     
     for (int frame = 0; frame < 1; ++frame) {
-        for (int j = hm; j >= 0; --j) {
+//        std::cout << frame << "\n";
+        for (int j = 0; j < gh; ++j) {
             framebuffer_scanline(j)
             for (int i = 0; i < gw; ++i) {
                 vec3 color(0, 0, 0);
@@ -40,7 +41,6 @@ int main(int argc, char *argv[]) {
         }
         if (quit) break;
     }
-    std::cerr << "\nDone.\n";
     final_framebuff_stuff(1000) // Delay
 
     return 0;

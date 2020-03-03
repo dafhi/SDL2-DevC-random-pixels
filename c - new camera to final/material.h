@@ -29,7 +29,8 @@ vec3 ray_color(const ray& r, const hittable& world, int depth) {
 
 class lambertian : public material {
     public:
-        lambertian(const vec3& a=vec3(1,1,1) )  { albedo = a; }
+        lambertian(const vec3& a=vec3(1,1,1) ) { albedo = a; }
+//        lambertian(const vec3& a=vec3(1,1,1) ) : albedo{sqrt(a[0]),sqrt(a[1]),sqrt(a[2])} { albedo = a; }
 
         virtual bool scatter(
             const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered
@@ -46,7 +47,7 @@ class lambertian : public material {
 
 class metal : public material {
     public:
-        metal(const vec3& a=vec3(1,1,1), tReal f = 0.1)  { albedo = a; fuzz = (f < 1 ? f : 1); }
+        metal(const vec3& a=vec3(1,1,1), tReal f = 0.1)  { albedo = a; fuzz = f; }
 
         virtual bool scatter(
             const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered

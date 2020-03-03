@@ -19,6 +19,8 @@ class vec3 {
         vec3(vec3& a) : e{a[0], a[1], a[2]} {}
 //        operator uint() const { return rgb_f(e[0], e[1], e[2]); }
 
+//        vec3 gamma() const { return vec3(sqrt(e[0]),sqrt(e[1]),sqrt(e[2])); }
+
         tReal x() const { return e[0]; }
         tReal y() const { return e[1]; }
         tReal z() const { return e[2]; }

@@ -3,19 +3,19 @@
 int main(int argc, char *argv[]) {
 
     auto win_scalar = 2.5;
-    auto scale = .9;
 
     const int winw = 200 * win_scalar;
     const int winh = 100 * win_scalar;
 
-    const int max_depth = 50;
-
-    create_window(winw, winh,1); // manual additional surface
-
+    auto scale = .75;
     const int w = winw * scale;
     const int h = winh * scale;
 
-//    create_surface(w,h);      // render offscreen
+    create_window(winw, winh,1); // manual additional surface
+
+    create_surface(w,h);
+
+    const int max_depth = 50;
 
     hittable_list world;
 
@@ -48,25 +48,28 @@ int main(int argc, char *argv[]) {
     //camera cam(90, aspect_ratio);
 
     float rad = sqrt(gw * gw + gh * gh) / 99;
-    for (int frame = 299; frame >= 0; --frame) {
-        rad *= .97;
-        rad = ffmax(rad, .7071);
-        float slope = 4/rad;
-        int dots = .45 * (gw * gh) / (pi * rad * rad) + 1;
-        std::cerr << "\rframes remaining:  " << frame << " " << std::flush;;
-        for (int k = 0; k < dots; ++k) {
+    for (int frame = 299; frame >= 0; --frame) { rt_hyperparams
+        for (int k = 0; k <= dots; ++k) {
+            #if 0
             int i = rnd * gw;
             int j = rnd * gh;
             auto u = (i + rnd) / gw;
             auto v = (j + rnd) / gh;
+            #else
+            float i = rnd * (gw);
+            float j = rnd * (gh);
+            auto u = (i) / gw;
+            auto v = (j) / gh;
+            #endif
             ray r = cam.get_ray(u, v);
             vec3 color = ray_color(r, world, max_depth);
             aadot::draw(i,hm-j,propix(color,1),rad,slope);
         }
-        propix_frame();
+        bool scaled = false;
+        bool gamma = true;
+        propix_frame(scaled, gamma);
         if (quit) break;
     }
-    std::cerr << "\nDone.\n";
     final_framebuff_stuff(400) // Delay
 
     return 0;
