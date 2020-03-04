@@ -5,7 +5,7 @@
 #ifndef AADOT_H
 #define AADOT_H
 
-#include "SDL2_and_progressive_rendering.h"
+#include "SDL2 and progressives.h"
 
 namespace aadot {
 
@@ -20,11 +20,11 @@ namespace aadot {
         //salpha = 1 / rad;                         // clamp prevents artifact
         //slope = slope < salpha ? salpha : slope;  //
 
-        y += .5;
+//        y += .5;
         int y0 = ffmax(y-rad, 0);
         int y1 = ffmin(y+rad+.5, hm);
 
-        x += .5;
+//        x += .5;
         int x0 = ffmax(x-rad, 0);
         int x1 = ffmin(x+rad+.5, wm);
 
@@ -50,17 +50,16 @@ namespace aadot {
             for (int i = x0 + j*pitchBy; i <= x1 + j*pitchBy; i++) {
                 float salpha = dx*dx+dySq;
                 if (salpha<sq) {
-                    gsum[i] += propix(col*col.iter, col.iter);
-                    //p32[i] = gsum[i];
+                
+                    sum[i] += propix(col*col.iter, col.iter);
                 } else if ( salpha <= coneSq) {
-                    
+                
                     #if 0
                     salpha = col.iter * (cone_h-(salpha));
                     #else
                     salpha = col.iter * (cone_h-sqrt(salpha));
                     #endif
-                    gsum[i] += propix(col * salpha, salpha);
-                    //p32[i] = gsum[i];
+                    sum[i] += propix(col * salpha, salpha);
                 }
                 dx+=slope;
             }

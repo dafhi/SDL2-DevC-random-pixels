@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[]) {
 
-    auto win_scalar = 2;
+    auto win_scalar = 3;
     
     const int winw = 200 * win_scalar;
     const int winh = 150 * win_scalar;
@@ -20,24 +20,23 @@ int main(int argc, char *argv[]) {
     const int w = winw * scale;
     const int h = winh * scale;
 
-    create_window(winw,winh,1);
-    
-//    create_surface(w,h);
+    create_window(winw,winh);
+    create_surface(w,h);
 
-    update_modulus = 10;
+    update_modulus = 3;
     
-    for (int frame = 0; frame < 1; ++frame) {
-//        std::cout << frame << "\n";
+    for (int frame = 0; frame < 10; ++frame) {
+        bool gamma = false;
         for (int j = 0; j < gh; ++j) {
             framebuffer_scanline(j)
             for (int i = 0; i < gw; ++i) {
                 vec3 color(0, 0, 0);
                 for (int s = 0; s < ns; ++s) {
-                    color += vec3(rnd, rnd, rnd);
+                    color += vec3(rnd, rnd, float(j)/gh);
                 }
-                write_pixel(color, _idx++, ns);
+                write_pixel(color, i, ns);
             }
-            even_more_framebu___you_get_the_point(j, update_modulus)
+            even_more_framebu___you_get_the_point(j, update_modulus, gamma)
         }
         if (quit) break;
     }

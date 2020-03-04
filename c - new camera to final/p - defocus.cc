@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "../common/hyperparams.h"
 
 int main(int argc, char *argv[]) {
 
@@ -7,11 +8,11 @@ int main(int argc, char *argv[]) {
     const int winw = 200 * win_scalar;
     const int winh = 100 * win_scalar;
 
-    auto scale = .75;
+    auto scale = .9;
     const int w = winw * scale;
     const int h = winh * scale;
 
-    create_window(winw, winh,1); // manual additional surface
+    create_window(winw, winh); // manual additional surface
 
     create_surface(w,h);
 
@@ -47,27 +48,11 @@ int main(int argc, char *argv[]) {
     camera cam(w/h, 20, lookfrom, lookat, aperture, dist_to_focus, vup);
     //camera cam(90, aspect_ratio);
 
-    float rad = sqrt(gw * gw + gh * gh) / 99;
-    for (int frame = 299; frame >= 0; --frame) { rt_hyperparams
-        for (int k = 0; k <= dots; ++k) {
-            #if 0
-            int i = rnd * gw;
-            int j = rnd * gh;
-            auto u = (i + rnd) / gw;
-            auto v = (j + rnd) / gh;
-            #else
-            float i = rnd * (gw);
-            float j = rnd * (gh);
-            auto u = (i) / gw;
-            auto v = (j) / gh;
-            #endif
-            ray r = cam.get_ray(u, v);
-            vec3 color = ray_color(r, world, max_depth);
-            aadot::draw(i,hm-j,propix(color,1),rad,slope);
-        }
-        bool scaled = false;
-        bool gamma = true;
-        propix_frame(scaled, gamma);
+    for (int frame = 199; frame >= 0; --frame) {
+        frame_hyperparams
+        std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
+        auto scaled = false;
+        propix_frame(scaled, bool_gamma);
         if (quit) break;
     }
     final_framebuff_stuff(400) // Delay

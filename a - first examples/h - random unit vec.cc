@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "../common/hyperparams.h"
 
 vec3 ray_color(const ray& r, const hittable& world, int depth) {
     hit_record rec;
@@ -14,14 +15,14 @@ vec3 ray_color(const ray& r, const hittable& world, int depth) {
 
 int main(int argc, char *argv[]) {
 
-    auto win_scalar = 4;
+    auto win_scalar = 3;
 
     const int winw = 200 * win_scalar;
     const int winh = 100 * win_scalar;
 
-    create_window(winw, winh,1); // manual additional surface
+    create_window(winw, winh); // manual additional surface
 
-    auto scale = .9;
+    auto scale = 1;
 
     const int w = winw * scale;
     const int h = winh * scale;
@@ -35,32 +36,13 @@ int main(int argc, char *argv[]) {
 
     const int max_depth = 50;
     
-    propix_fill( gsurf, vec3(0,0,0), .001);
-
-    float rad = sqrt(gw * gw + gh * gh) / 99;
-    for (int frame = 199; frame >= 0; --frame) { rt_hyperparams
-        for (int k = 0; k < dots; ++k) {
-            #if 0
-            int i = rnd * gw;
-            int j = rnd * gh;
-            auto u = (i + rnd) / gw;
-            auto v = (j + rnd) / gh;
-            #else
-            float i = rnd * (gw);
-            float j = rnd * (gh);
-            auto u = (i) / gw;
-            auto v = (j) / gh;
-            #endif
-            ray r = cam.get_ray(u, v);
-            vec3 color = ray_color(r, world, max_depth);
-            aadot::draw(i,hm-j,propix(color,1),rad,slope);
-        }
+    for (int frame = 359; frame >= 0; --frame) {
+        frame_hyperparams
+        std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         auto scaled = false;
-        auto gamma = true;
-        propix_frame(scaled, gamma);
+        propix_frame(scaled, bool_gamma);
         if (quit) break;
     }
-    std::cerr << "\nDone.\n";
     final_framebuff_stuff(800) // Delay
 
     return 0;
