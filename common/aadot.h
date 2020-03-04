@@ -20,11 +20,9 @@ namespace aadot {
         //salpha = 1 / rad;                         // clamp prevents artifact
         //slope = slope < salpha ? salpha : slope;  //
 
-//        y += .5;
         int y0 = ffmax(y-rad, 0);
         int y1 = ffmin(y+rad+.5, hm);
 
-//        x += .5;
         int x0 = ffmax(x-rad, 0);
         int x1 = ffmin(x+rad+.5, wm);
 

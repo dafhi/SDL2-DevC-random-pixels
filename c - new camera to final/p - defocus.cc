@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]) {
 
-    auto win_scalar = 2.5;
+    auto win_scalar = 5;
 
     const int winw = 200 * win_scalar;
     const int winh = 100 * win_scalar;

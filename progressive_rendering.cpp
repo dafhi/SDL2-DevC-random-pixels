@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
             for (int i = 0; i < gw; ++i) {
                 vec3 color(0, 0, 0);
                 for (int s = 0; s < ns; ++s) {
-                    color += vec3(rnd, rnd, float(j)/gh);
+                    color += vec3(rnd, rnd, rnd);
                 }
                 write_pixel(color, i, ns);
             }

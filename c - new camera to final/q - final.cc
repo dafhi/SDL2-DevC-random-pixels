@@ -45,19 +45,19 @@ hittable_list random_scene() {
 
 int main(int argc, char *argv[]) {
 
-    auto scale = .9;
+    auto scale = 2.5;
 
     const int winw = 200 * scale;
     const int winh = 100 * scale;
     
     const int max_depth = 50;
 
-    scale = .9;
+    scale = .95;
     const int w = winw * scale;
     const int h = winh * scale;
 
     create_window(winw, winh);
-    //create_surface(w,h);
+    create_surface(w,h);
 
     auto world = random_scene();
 
@@ -69,9 +69,9 @@ int main(int argc, char *argv[]) {
     tReal vfov = 20;
     camera cam(aspect_ratio, vfov, lookfrom, lookat, aperture, dist_to_focus, vec3(0,1,0));
 
-    for (int frame = 99; frame >= 0; --frame) {
+    for (int frame = 39; frame >= 0; --frame) {
         frame_hyperparams
-        std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
+        std::cerr << "\rframes remaining:  " << frame << "  " << std::flush;
         auto scaled = false;
         propix_frame(scaled, bool_gamma);
         if (quit) break;

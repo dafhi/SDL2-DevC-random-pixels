@@ -15,14 +15,14 @@ vec3 ray_color(const ray& r, const hittable& world, int depth) {
 
 int main(int argc, char *argv[]) {
 
-    auto win_scalar = 3;
+    auto scale = 5.0;
 
-    const int winw = 200 * win_scalar;
-    const int winh = 100 * win_scalar;
+    const int winw = 200 * scale;
+    const int winh = 100 * scale;
 
-    create_window(winw, winh); // manual additional surface
+    create_window(winw, winh);
 
-    auto scale = 1;
+    scale = 1;
 
     const int w = winw * scale;
     const int h = winh * scale;
@@ -36,12 +36,13 @@ int main(int argc, char *argv[]) {
 
     const int max_depth = 50;
     
-    for (int frame = 359; frame >= 0; --frame) {
+    for (int frame = 299; frame >= 0; --frame) {
         frame_hyperparams
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         auto scaled = false;
         propix_frame(scaled, bool_gamma);
         if (quit) break;
+//        SDL_Delay(10);
     }
     final_framebuff_stuff(800) // Delay
 
