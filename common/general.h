@@ -26,9 +26,9 @@ inline double drand() {
 
 #define rnd     random_double()
 
-inline double rnd {
+inline double random_double() {
     // Returns a random real in [0,1).
-    #if 0
+    #if 1
     return drand();
     #else
     return rand() / (RAND_MAX + 1.0);

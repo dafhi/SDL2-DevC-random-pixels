@@ -1,6 +1,6 @@
 /* -- Dev-C++     -lmingw32 -lSDL2main -lSDL2
 
-    averaging pixels over time
+    pixels averaging over time
     
 */
 

@@ -1,5 +1,4 @@
 #include "camera.h"
-#include "../common/hyperparams.h"
 
 vec3 ray_color(const ray& r, const hittable& world, int depth) {
     hit_record rec;
@@ -13,9 +12,11 @@ vec3 ray_color(const ray& r, const hittable& world, int depth) {
     return sky_color(r.d());
 }
 
+#include "../common/hyperparams.h"
+
 int main(int argc, char *argv[]) {
 
-    auto scale = 5.0;
+    auto scale = 3.0;
 
     const int winw = 200 * scale;
     const int winh = 100 * scale;
@@ -36,13 +37,12 @@ int main(int argc, char *argv[]) {
 
     const int max_depth = 50;
     
-    for (int frame = 299; frame >= 0; --frame) {
-        frame_hyperparams
+    for (int frame = 69; frame >= 0; --frame) {
+        bool scaled = false;
+        frame_hyperparams(frame, cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
-        auto scaled = false;
-        propix_frame(scaled, bool_gamma);
         if (quit) break;
-//        SDL_Delay(10);
+//        SDL_Delay(50);
     }
     final_framebuff_stuff(800) // Delay
 

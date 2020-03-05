@@ -31,7 +31,7 @@ class progressive_pixel {
         const int r = ((new_col >> 16) & 255) - ((colp >> 16) & 255);
         const int g = ((new_col >> 8) & 255) - ((colp >> 8) & 255);
         const int b = (new_col & 255) - (colp & 255);
-        const tReal i_dcol_max = 1 / sqrt(255*255*3);
+        static const tReal i_dcol_max = 1 / sqrt(255*255*3);
         activ = activ * .8 + sqrt(r*r + g*g + b*b)*i_dcol_max;
     }
 
@@ -42,8 +42,8 @@ class progressive_pixel {
     }
 
     vec3    v;
-    tReal   iter;
-    uint    colp;
+    tReal   iter=0;
+    uint    colp=0;
     tReal   activ=0;    // uint rgb delta
     tReal   imap;       // activ / activ_max
 };

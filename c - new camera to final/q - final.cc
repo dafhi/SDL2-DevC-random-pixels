@@ -1,4 +1,5 @@
 #include "camera.h"
+
 #include "../common/hyperparams.h"
 
 hittable_list random_scene() {
@@ -45,14 +46,14 @@ hittable_list random_scene() {
 
 int main(int argc, char *argv[]) {
 
-    auto scale = 2.5;
+    float scale = 3;
 
     const int winw = 200 * scale;
     const int winh = 100 * scale;
     
     const int max_depth = 50;
 
-    scale = .95;
+    scale = .9;
     const int w = winw * scale;
     const int h = winh * scale;
 
@@ -68,12 +69,11 @@ int main(int argc, char *argv[]) {
     tReal aperture = 0.1;
     tReal vfov = 20;
     camera cam(aspect_ratio, vfov, lookfrom, lookat, aperture, dist_to_focus, vec3(0,1,0));
-
-    for (int frame = 39; frame >= 0; --frame) {
-        frame_hyperparams
+    
+    for (int frame = 45; frame >= 0; --frame) {
+        bool scaled = false;
+        frame_hyperparams(frame, cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << "  " << std::flush;
-        auto scaled = false;
-        propix_frame(scaled, bool_gamma);
         if (quit) break;
     }
     final_framebuff_stuff(400) // Delay

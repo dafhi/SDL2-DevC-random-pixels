@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]) {
 
-    auto win_scalar = 5;
+    auto win_scalar = 4;
 
     const int winw = 200 * win_scalar;
     const int winh = 100 * win_scalar;
@@ -48,12 +48,12 @@ int main(int argc, char *argv[]) {
     camera cam(w/h, 20, lookfrom, lookat, aperture, dist_to_focus, vup);
     //camera cam(90, aspect_ratio);
 
-    for (int frame = 199; frame >= 0; --frame) {
-        frame_hyperparams
+    for (int frame = 69; frame >= 0; --frame) {
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
-        auto scaled = false;
-        propix_frame(scaled, bool_gamma);
+        bool scaled = false;
+        frame_hyperparams(frame, cam, world, max_depth, scaled);
         if (quit) break;
+//        SDL_Delay(50);
     }
     final_framebuff_stuff(400) // Delay
 
