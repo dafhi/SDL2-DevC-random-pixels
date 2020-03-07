@@ -26,9 +26,9 @@ int main(int argc, char *argv[]) {
             auto u = float(i) / w;
             auto v = float(j) / h;
             ray r(origin, lower_left_corner + u*horizontal + v*vertical);
-            
+
             vec3 color = ray_color(r);
-            
+
             write_pixel( color, i );
         }
         even_more_framebu___you_get_the_point(j, update_modulus, bool_gamma)

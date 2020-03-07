@@ -21,6 +21,8 @@ int main(int argc, char *argv[]) {
     const int winw = 200 * scale;
     const int winh = 100 * scale;
 
+    const int max_depth = 50;
+
     create_window(winw, winh);
 
     scale = 1;
@@ -35,9 +37,7 @@ int main(int argc, char *argv[]) {
     world.add(make_shared<sphere>(vec3(0,-100.5,-1), 100));
     camera cam;
 
-    const int max_depth = 50;
-    
-    for (int frame = 49; frame >= 0; --frame) {
+    for (int frame = 99; frame >= 0; --frame) {
         bool scaled = false;
         frame_hyperparams(frame, cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;

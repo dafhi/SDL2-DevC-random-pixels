@@ -44,7 +44,7 @@ hittable_list random_scene() {
 
 int main(int argc, char *argv[]) {
 
-    float scale = 2.5;
+    float scale = 3;
 
     const int winw = 200 * scale;
     const int winh = 100 * scale;
@@ -68,14 +68,14 @@ int main(int argc, char *argv[]) {
     tReal vfov = 20;
     camera cam(aspect_ratio, vfov, lookfrom, lookat, aperture, dist_to_focus);
     
-    for (int frame = 30; frame >= 0; --frame) {
+    for (int frame = 60; frame >= 0; --frame) {
         bool scaled = false;
         frame_hyperparams(frame, cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         if (quit) break;
     }
     
-//    save_bmp = true;
+    save_bmp = true;
     final_framebuff_stuff(1000)
 
     return 0;

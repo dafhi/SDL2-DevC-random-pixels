@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
         vec3(0,0,-1), 0.5, make_shared<metal>(vec3(0.7, 0.3, 0.3), .4)));
 
     world.add(make_shared<sphere>(
-        vec3(0,-100.5,-1), 100, make_shared<metal>(vec3(0.8, 0.8, 0.0), .4)));
+        vec3(0,-100.5,-1), 100, make_shared<metal>(vec3(0.8, 0.8, 0.0), .8)));
 
     world.add(make_shared<sphere>(vec3(1,0,-1), 0.5, make_shared<metal>(vec3(0.8, 0.6, 0.2), .0)));
     world.add(make_shared<sphere>(vec3(-1,0,-1), 0.5, make_shared<metal>(vec3(0.8, 0.8, 0.8), .0)));
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     world.add(make_shared<sphere>(vec3(-1,0,-1), -0.45, make_shared<dielectric>(1.5)));
     #endif
     
-    auto lookfrom = vec3(3,2,2);
+    auto lookfrom = vec3(3,3,2)*1.5;
     vec3 lookat(0,0,-1);
     
     auto dist_to_focus = (lookfrom-lookat).length();
@@ -58,12 +58,11 @@ int main(int argc, char *argv[]) {
     
     camera cam(w/h, 20, lookfrom, lookat, aperture, dist_to_focus);
 
-    for (int frame = 45; frame >= 0; --frame) {
+    for (int frame = 99; frame >= 0; --frame) {
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         bool scaled = false;
         frame_hyperparams(frame, cam, world, max_depth, scaled);
         if (quit) break;
-//        SDL_Delay(50);
     }
     final_framebuff_stuff(1000)
 

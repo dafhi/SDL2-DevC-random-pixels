@@ -10,9 +10,9 @@
 
 #include "propix.h"
 
-bool save_bmp = false; // save render
-
 //#define show_raytrace_importance_map
+
+bool save_bmp = false; // save render
 
 // ---------- framebuffer
 
@@ -77,7 +77,6 @@ void create_window(int w, int h){
         rsrc.y = hm-yy;\
         desi = (rsrc.y) * pitchBy;\
         srci = pitch_corner - desi;
-//        const int srci = pitch_corner - desi;
 
 #define initialize_profield\
         if (bool_initialize_profield) {\
@@ -85,12 +84,12 @@ void create_window(int w, int h){
             p32 = (uint *)gsurf->pixels;\
             sum = new propix[pitchBy * gh];\
             bool_initialize_profield = false;\
-            propix_fill(gsurf, vec3(0,0,0),.001);\
+            propix_fill(gsurf, vec3(0,0,0), .001);\
             rad = sqrt(gw * gw + gh * gh) / 35;\
         }\
 
-#define let_OS_breathe(upd_modu)\
-        if (rsrc.y % upd_modu == 0) {\
+#define let_OS_breathe(input_1, upd_modu)\
+        if (input_1 % upd_modu == 0) {\
             auto k = SDL_UpdateWindowSurface(window);\
             if (rnd < .25) SDL_Delay(1);\
             SDL_PollEvent(&event);\
@@ -130,18 +129,18 @@ void scanline(const int j, const bool gamma = false){
         }
 }
 
-void propix_frame(bool scaled = false, bool gamma = false) {
+void propix_frame(int frame, bool scaled = false, bool gamma = false, int update_mod = 1) {
     for (int j = 0; j < gh; j++) {
         scanline(j, gamma);
     }
-    if (gsurf != buf) {
+    if (gsurf != buf & (frame % update_mod == 0)) {
         rsrc.y = 0; rsrc.h = gh;
         rdes.w = scaled ? buf->w : gw;
         rdes.h = scaled ? buf->h : gh;
         rdes.y = 0;
         SDL_BlitScaled(gsurf, &rsrc, buf, &rdes);
     }
-    let_OS_breathe(1)
+    let_OS_breathe(frame, update_mod)
 }
 
 #define even_more_framebu___you_get_the_point(yy,upd_modu,bool_gamma)\
@@ -155,7 +154,7 @@ void propix_frame(bool scaled = false, bool gamma = false) {
             rdes.w = rsrc.w;\
             SDL_BlitScaled(gsurf, &rsrc, buf, &rdes);\
         }\
-        let_OS_breathe(upd_modu)\
+        let_OS_breathe(yy,upd_modu)\
         \
         if (quit) break;
 

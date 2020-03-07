@@ -40,16 +40,15 @@ void importance_map(int frame, int update_modulus = 1) {
         aadot::draw(i,j,propix(color,dot_strength),rad,slope);\
     }\
     importance_map(frame, 1);\
-    propix_frame(scaled, bool_gamma);\
     dot_dilution *= .987;
 
 bool draw_some_dots(int frame, camera cam, hittable_list world, int max_depth, bool scaled=false) {
     static double dot_dilution = .98;
-    int dots = .4 * (gw * gh) / (pi * rad * rad);
-    float slope = 1 / rad;
-    float dot_strength = 1.5*(1 - dot_dilution);
-    if (rad > .7071) { frame_drawdots; rad *= .89; return true; } rad = .7071;
-    if (dot_dilution > .6) { frame_drawdots; return true; }
+    int dots = .5 * (gw * gh) / (pi * rad * rad);
+    float slope = 1.4 / rad;
+    float dot_strength = 0.9*(1 - dot_dilution);
+    if (rad > .7071) { frame_drawdots; rad *= .88; return true; } rad = .7071;
+    if (dot_dilution > .5) { frame_drawdots; return true; }
     return false;
 }
 
@@ -66,26 +65,26 @@ bool draw_some_dots(int frame, camera cam, hittable_list world, int max_depth, b
 
 void draw_some_pixels(int frame, camera cam, hittable_list world, int max_depth, bool scaled = false) {
     std::cerr << ".. pixels ";
-    const int   strat = 3;
-    //const float enforced_rate = 1 / strat;
+    const int   strat = 15;
+    const float enforced_rate = (float)1 / strat;
     for (int j = gh; --j >= 0;) {
         framebuffer_scanline(j)
         for (int i = 0; i < gw; ++i) {
             ray         r;
-            float       u, v, s=rnd;
+            float       u, v;
             int         samps=0;
-            if (s < .002) {
+            if (sum[srci+i].imap >= .3) {
                 first_ray
                 auto color = ray_color(r, world, max_depth);
-                write_pixel(color, i);
-            } else if (s >= .5) {
-                first_ray
-                auto color = ray_color(r, world, max_depth);
-                for (int k=1; k++ < sum[srci+i].imap * 10;) {
+                for (int k=1; k++ < sum[srci+i].imap * 3;) {
                     first_ray
                     color += ray_color(r, world, max_depth);
                 }
                 write_pixel(color, i, samps);
+            } else if (rnd < enforced_rate) {
+                first_ray
+                auto color = ray_color(r, world, max_depth);
+                write_pixel(color, i);
             }
         }
         even_more_framebu___you_get_the_point(j, update_modulus, bool_gamma)
@@ -93,13 +92,14 @@ void draw_some_pixels(int frame, camera cam, hittable_list world, int max_depth,
     importance_map(frame);
 }
 
-void frame_hyperparams(int frame, camera cam, hittable_list world, int max_depth, bool scaled = false){
+void frame_hyperparams(int frame, camera cam, hittable_list world, int max_depth, bool scaled = false, int update_mod=1){
     initialize_profield
     update_modulus = gh;
     bool_gamma = true;
     if ( !draw_some_dots(frame, cam, world, max_depth, scaled) ) {
         draw_some_pixels(frame, cam, world, max_depth, scaled);
     }
+    propix_frame(frame, scaled, bool_gamma, update_mod);
 }
 
 /*
