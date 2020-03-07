@@ -16,7 +16,7 @@ vec3 ray_color(const ray& r, const hittable& world, int depth) {
 
 int main(int argc, char *argv[]) {
 
-    auto scale = 3.0;
+    auto scale = 4.0;
 
     const int winw = 200 * scale;
     const int winh = 100 * scale;
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 
     const int max_depth = 50;
     
-    for (int frame = 69; frame >= 0; --frame) {
+    for (int frame = 49; frame >= 0; --frame) {
         bool scaled = false;
         frame_hyperparams(frame, cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;

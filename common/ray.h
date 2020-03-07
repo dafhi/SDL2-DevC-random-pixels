@@ -1,3 +1,5 @@
+/*  ray class from "Ray Tracing in one Weekend" by Peter Shirley */
+
 #ifndef RAY_H
 #define RAY_H
 

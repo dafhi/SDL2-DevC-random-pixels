@@ -1,13 +1,13 @@
 /* -- vec3.h
 
-    referended from "Ray Tracing in one Weekend" by Peter Shirley
+    tinkered vector class from "Ray Tracing in one Weekend" by Peter Shirley
 
 */
 
 #ifndef VEC3_H
 #define VEC3_H
 
-#include "gfx_header.h"
+#include "gfx_header.h" // cmath, general.h -> random_double
 
 #include <iostream>
 
@@ -170,6 +170,29 @@ vec3 random_in_unit_disk() {
         if (p.length_squared() >= 1) continue;
         return p;
     }
+}
+
+vec3 rodrigues_rot( vec3 rd, vec3 axis, float angle) {
+
+    float cosa = cos(angle);
+    
+    return (1-cosa) * ( axis.x()*rd.x() + axis.y()*rd.y() + axis.z()*rd.z() ) *
+        axis + cosa*rd + sin(angle) *
+        vec3(
+            axis.y()*rd.z()-axis.z()*rd.y(),
+            axis.z()*rd.x()-axis.x()*rd.z(),
+            axis.x()*rd.y()-axis.y()*rd.x()
+        );
+}
+
+vec3 fuzzy_norm( vec3 rd, vec3 surf_n, float k) {
+    rd = unit_vector(rd);
+
+    const vec3 vtemp =
+        rodrigues_rot(surf_n, cross(surf_n, rd), -acos(-dot(surf_n, rd)) * k / 2 );
+
+    const float a = sqrt(2);
+    return unit_vector(vtemp * a + random_in_unit_sphere() * k);
 }
 
 #endif

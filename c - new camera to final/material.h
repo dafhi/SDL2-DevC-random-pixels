@@ -1,7 +1,8 @@
+// modified from "Ray Tracing in one Weekend"
+
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-//#include "hittable.h"
 #include "hittable_list.h"
 
 class material {
@@ -12,55 +13,54 @@ class material {
     vec3 albedo;
 };
 
-vec3 ray_color(const ray& r, const hittable& world, int depth) {
-    hit_record rec;
-    if (world.hit(r, 0.001, infinity, rec)) {
-        // If we've exceeded the ray bounce limit, no more light is gathered.
-        if (depth <= 0)
-            return rec.mat_ptr->albedo;
-        ray scattered;
-        vec3 attenuation;
-        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
-            return attenuation * ray_color(scattered, world, depth-1);
-        return rec.mat_ptr->albedo;
-    }
-    return sky_color(r.d());
-}
-
 class lambertian : public material {
-    public:
-        lambertian(const vec3& a=vec3(1,1,1) ) { albedo = a; }
-//        lambertian(const vec3& a=vec3(1,1,1) ) : albedo{sqrt(a[0]),sqrt(a[1]),sqrt(a[2])} { albedo = a; }
+        public:
 
-        virtual bool scatter(
-            const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered
-        ) const {
-            vec3 scatter_direction = rec.normal + random_unit_vector();
-            scattered = ray(rec.p, scatter_direction);
-            attenuation = albedo;
-            return true;
-        }
+    // param 2 makes hand-typed material switching easier
+    lambertian(const vec3& a=vec3(1,1,1), float dummy_var=0) { albedo = a; }
 
-//    public:
-//        vec3 albedo;
+    virtual bool scatter(
+        const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered
+    ) const {
+        vec3 scatter_direction = rec.normal + random_unit_vector();
+        scattered = ray(rec.p, scatter_direction);
+        attenuation = albedo;
+        return true;
+    }
+
 };
 
 class metal : public material {
-    public:
-        metal(const vec3& a=vec3(1,1,1), tReal f = 0.1)  { albedo = a; fuzz = f; }
+        public:
 
-        virtual bool scatter(
-            const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered
-        ) const {
+    metal(const vec3& a=vec3(1,1,1), tReal f = 0.1)  { albedo = a; fuzz = f; }
+
+    virtual bool scatter(
+        const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered
+    ) const {
+    
+        attenuation = albedo;
+        #if 0
+        
+            // Ray Tracing in one Weekend
             vec3 reflected = reflect(unit_vector(r_in.direction()), rec.normal);
             scattered = ray(rec.p, reflected + fuzz*random_in_unit_sphere());
-            attenuation = albedo;
-            return (dot(scattered.direction(), rec.normal) > 0);
-        }
 
-    public:
-        vec3 albedo;
-        tReal fuzz;
+            return (dot(scattered.direction(), rec.normal) > 0);
+        #else
+        
+            // original "metal" scattering concept goes from perfect mirror
+            // to a very close lambertian approximation. (probs a bug in my code)
+            vec3 reflected = reflect(
+                    unit_vector(r_in.d()), fuzzy_norm( r_in.d(), rec.normal, fuzz )
+                );
+            scattered = ray(rec.p, reflected);
+            return true;
+        #endif
+
+    }
+
+    float fuzz;
 };
 
 double schlick(double cosine, double ref_idx) {
@@ -76,7 +76,7 @@ class dielectric : public material {
         virtual bool scatter(
             const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered
         ) const {
-            attenuation = vec3(1.0, 1.0, 1.0);
+            attenuation = albedo; //vec3(1.0, 1.0, 1.0);
             tReal etai_over_etat = (rec.front_face) ? (1.0 / ref_idx) : (ref_idx);
 
             vec3 unit_direction = unit_vector(r_in.direction());
@@ -102,5 +102,20 @@ class dielectric : public material {
     public:
         tReal ref_idx;
 };
+
+vec3 ray_color(const ray& r, const hittable& world, int depth) {
+    hit_record rec;
+    if (world.hit(r, 0.001, infinity, rec)) {
+        // If we've exceeded the ray bounce limit, no more light is gathered.
+        if (depth < 1)
+            return rec.mat_ptr->albedo;
+        ray scattered;
+        vec3 attenuation;
+        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+            return attenuation * ray_color(scattered, world, depth-1);
+        return rec.mat_ptr->albedo;
+    }
+    return sky_color(r.d());
+}
 
 #endif

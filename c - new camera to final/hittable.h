@@ -1,7 +1,9 @@
+// modified from "Ray Tracing in one Weekend"
+
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-//#include "ray.h"
+#include "../common/rtweekend.h"
 
 class material;
 

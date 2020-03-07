@@ -1,4 +1,4 @@
-/* -- 
+/* -- Anti-aliased dot renderer
 
 */
 

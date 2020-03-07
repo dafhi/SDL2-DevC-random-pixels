@@ -1,7 +1,7 @@
 /*  -- Dev-C++     -lmingw32 -lSDL2main -lSDL2
 
     progressive pixel class and SDL2 encapsulation defines
-    2020 Feb 26 - by dafhi
+    2020 Mar. 5 - by dafhi
     
 */
 

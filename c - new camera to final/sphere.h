@@ -1,3 +1,5 @@
+// modified from "Ray Tracing in one Weekend"
+
 #ifndef SPHERE_H
 #define SPHERE_H
 
@@ -17,6 +19,7 @@ class sphere: public hittable {
         tReal radius;
         shared_ptr<material> mat_ptr;
 };
+
 bool sphere::hit(const ray& r, tReal t_min, tReal t_max, hit_record& rec) const {
     vec3 oc = r.origin() - center;
     auto a = r.direction().length_squared();
@@ -27,23 +30,18 @@ bool sphere::hit(const ray& r, tReal t_min, tReal t_max, hit_record& rec) const 
     if (discriminant > 0) {
         auto root = sqrt(discriminant);
         auto temp = (-half_b - root)/a;
-        if (temp < t_max && temp > t_min) {
-            rec.t = temp;
-            rec.p = r.at(rec.t);
-            vec3 outward_normal = (rec.p - center) / radius;
-            rec.set_face_normal(r, outward_normal);
-            rec.mat_ptr = mat_ptr;
-            return true;
+        #define dupl\
+        if (temp < t_max && temp > t_min) {\
+            rec.t = temp;\
+            rec.p = r.at(rec.t);\
+            vec3 outward_normal = (rec.p - center) / radius;\
+            rec.set_face_normal(r, outward_normal);\
+            rec.mat_ptr = mat_ptr;\
+            return true;\
         }
+        dupl
         temp = (-half_b + root) / a;
-        if (temp < t_max && temp > t_min) {
-            rec.t = temp;
-            rec.p = r.at(rec.t);
-            vec3 outward_normal = (rec.p - center) / radius;
-            rec.set_face_normal(r, outward_normal);
-            rec.mat_ptr = mat_ptr;
-            return true;
-        }
+        dupl
     }
     return false;
 }

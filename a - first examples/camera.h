@@ -1,7 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "../common/rtweekend.h"
 #include "sphere.h"
 
 class camera {

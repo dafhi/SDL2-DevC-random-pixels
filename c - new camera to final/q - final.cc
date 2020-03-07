@@ -1,12 +1,10 @@
 #include "camera.h"
 
-#include "../common/hyperparams.h"
-
 hittable_list random_scene() {
     hittable_list objects;
 
     objects.add(make_shared<sphere>(
-        vec3(0,-1000,0), 1000, make_shared<lambertian>(vec3(0.5, 0.5, 0.5))));
+        vec3(0,-1000,0), 1000, make_shared<metal>(vec3(0.5, 0.5, 0.5), 1)));
 
     int i = 1;
     for (int a = -11; a < 11; a++) {
@@ -46,14 +44,14 @@ hittable_list random_scene() {
 
 int main(int argc, char *argv[]) {
 
-    float scale = 3;
+    float scale = 2.5;
 
     const int winw = 200 * scale;
     const int winh = 100 * scale;
     
     const int max_depth = 50;
 
-    scale = .9;
+    scale = .97;
     const int w = winw * scale;
     const int h = winh * scale;
 
@@ -68,15 +66,17 @@ int main(int argc, char *argv[]) {
     tReal dist_to_focus = 10.0;
     tReal aperture = 0.1;
     tReal vfov = 20;
-    camera cam(aspect_ratio, vfov, lookfrom, lookat, aperture, dist_to_focus, vec3(0,1,0));
+    camera cam(aspect_ratio, vfov, lookfrom, lookat, aperture, dist_to_focus);
     
-    for (int frame = 45; frame >= 0; --frame) {
+    for (int frame = 30; frame >= 0; --frame) {
         bool scaled = false;
         frame_hyperparams(frame, cam, world, max_depth, scaled);
-        std::cerr << "\rframes remaining:  " << frame << "  " << std::flush;
+        std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         if (quit) break;
     }
-    final_framebuff_stuff(400) // Delay
+    
+//    save_bmp = true;
+    final_framebuff_stuff(1000)
 
     return 0;
 }

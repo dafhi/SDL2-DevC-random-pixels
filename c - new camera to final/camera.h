@@ -1,7 +1,8 @@
+// modified from "Ray Tracing in one Weekend"
+
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "../common/rtweekend.h"
 #include "sphere.h"
 
 class camera {
@@ -46,5 +47,6 @@ class camera {
         tReal lens_radius;
 };
 
+#include "../common/hyperparams.h"
 
 #endif

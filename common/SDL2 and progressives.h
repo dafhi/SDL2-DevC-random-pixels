@@ -1,10 +1,8 @@
 /*  -- Dev-C++     -lmingw32 -lSDL2main -lSDL2
 
     progressive pixel class and SDL2 encapsulation defines
-    2020 Mar 3 - by dafhi
+    2020 Mar 5 - by dafhi
     
-    // for ray-traced projects, line 108 lets you view importance map
-
 */
 
 #ifndef SDL2_AND_PROGR_H
@@ -13,6 +11,8 @@
 #include "propix.h"
 
 bool save_bmp = false; // save render
+
+//#define show_raytrace_importance_map
 
 // ---------- framebuffer
 
@@ -104,15 +104,16 @@ void create_window(int w, int h){
                 }\
             }\
         }\
+        
+#ifdef show_raytrace_importance_map
 
-#if 1
-    #define pixel_activity(gamma_or_no)\
-                    p32[desi+i] = sum[srci+i]gamma_or_no;
-#else
-    // importance map from ray tracing.  calcs done in hyperparams.h
     #define pixel_activity(gamma_or_no)\
                     float c = sum[srci+i].imap;\
                     p32[desi+i] = rgb_f(c,c,c);
+#else
+
+    #define pixel_activity(gamma_or_no)\
+                    p32[desi+i] = sum[srci+i]gamma_or_no;
 #endif
 
 void scanline(const int j, const bool gamma = false){

@@ -1,9 +1,6 @@
 2020 Mar 5
 
-y: 0 = bottom
-
-
-
+Rendering backend has been coded so that "y = 0" represents the bottom row
 
 
 
