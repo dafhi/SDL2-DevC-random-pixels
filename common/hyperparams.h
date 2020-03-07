@@ -1,4 +1,7 @@
-/* -- hyperparams.h - 2020 Mar 5 - by dafhi
+#ifndef HYPERPARAMS_H
+#define HYPERPARAMS_H
+
+/* -- hyperparams.h - 2020 Mar 7 - by dafhi
 
         techs
 
@@ -7,12 +10,11 @@
 
 */
 
-#ifndef HYPERPARAMS_H
-#define HYPERPARAMS_H
+#define radiance_string  ray_color(r, world, max_depth)
 
 void importance_map(int frame, int update_modulus = 1) {
+    float activ_max = 0;
     if (frame % update_modulus == 0) {
-        activ_max = 0;
         for (int j = gh; --j > 0;) {
             framebuffer_scanline(j)
             for (int i = 0; i++ < wm;) {
@@ -36,26 +38,24 @@ void importance_map(int frame, int update_modulus = 1) {
         float i = u * gw;\
         float j = v * gh;\
         ray r = cam.get_ray(u, v);\
-        vec3 color = ray_color(r, world, max_depth);\
+        vec3 color = radiance_string;\
         aadot::draw(i,j,propix(color,dot_strength),rad,slope);\
     }\
     importance_map(frame, 1);\
-    dot_dilution *= .987;
+    aadots_rendertime *= .991;
 
 bool draw_some_dots(int frame, camera cam, hittable_list world, int max_depth, bool scaled=false) {
-    static double dot_dilution = .98;
-    int dots = .5 * (gw * gh) / (pi * rad * rad);
-    float slope = 1.4 / rad;
-    float dot_strength = 0.9*(1 - dot_dilution);
-    if (rad > .7071) { frame_drawdots; rad *= .88; return true; } rad = .7071;
-    if (dot_dilution > .5) { frame_drawdots; return true; }
+    static double aadots_rendertime = .98;
+    int dots = .4 * (gw * gh) / (pi * rad * rad);
+    float slope = 1.1 / rad;
+    float dot_strength = 2.7*(1 - aadots_rendertime);
+    if (rad > .7071) { frame_drawdots; rad *= .87; return true; } rad = .7071;
+    if (aadots_rendertime > .7) { frame_drawdots; return true; }
     return false;
 }
 
 // + .5 eliminates blurriness from aa dots crossover which suggests problem with
-
-// "off by one" in the camera class, or
-// problem with my dots
+// "off by one" in the camera class or my dots
 
 #define first_ray\
     u = (i + rnd) / (gw + .5);\
@@ -73,17 +73,17 @@ void draw_some_pixels(int frame, camera cam, hittable_list world, int max_depth,
             ray         r;
             float       u, v;
             int         samps=0;
-            if (sum[srci+i].imap >= .3) {
+            if (sum[srci+i].imap >= enforced_rate) {
                 first_ray
-                auto color = ray_color(r, world, max_depth);
+                auto color = radiance_string;
                 for (int k=1; k++ < sum[srci+i].imap * 3;) {
                     first_ray
-                    color += ray_color(r, world, max_depth);
+                    color += radiance_string;
                 }
                 write_pixel(color, i, samps);
             } else if (rnd < enforced_rate) {
                 first_ray
-                auto color = ray_color(r, world, max_depth);
+                auto color = radiance_string;
                 write_pixel(color, i);
             }
         }
@@ -92,22 +92,18 @@ void draw_some_pixels(int frame, camera cam, hittable_list world, int max_depth,
     importance_map(frame);
 }
 
-void frame_hyperparams(int frame, camera cam, hittable_list world, int max_depth, bool scaled = false, int update_mod=1){
+void frame_hyperparams(int frame, camera cam, hittable_list world, int max_depth, bool scaled = false){
     initialize_profield
     update_modulus = gh;
     bool_gamma = true;
     if ( !draw_some_dots(frame, cam, world, max_depth, scaled) ) {
         draw_some_pixels(frame, cam, world, max_depth, scaled);
     }
-    propix_frame(frame, scaled, bool_gamma, update_mod);
+    progressive_frame(scaled, bool_gamma, frame, 1);
 }
 
 /*
-        std::cout << " " << dot_dilution;\
         std::cout << " " << update_modulus << " ";\
-                sum[(int)i + (int)j*pitchBy] = color;\
-        } else {\
-        int dots = .52 * (gw * gh) / (pi * rad * rad);
 */
 
 #endif

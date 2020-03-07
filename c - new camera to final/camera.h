@@ -1,7 +1,9 @@
-// modified from "Ray Tracing in one Weekend"
-
 #ifndef CAMERA_H
 #define CAMERA_H
+
+// Progressive rendering:  Note #include at the end
+
+// modified from "Ray Tracing in one Weekend"
 
 #include "sphere.h"
 

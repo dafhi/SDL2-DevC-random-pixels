@@ -1,20 +1,20 @@
 /* -- Dev-C++     -lmingw32 -lSDL2main -lSDL2
 
-    Anti-aliased dots.   I like these guys
+    Anti-aliased dots.
 
 */
 
 #include "common/aadot.h"
 
 void draw_some_dots(SDL_Surface* srf){
-    #define border(wh,b) random_double(b, wh-1-b)
+    #define border(wh,bor) random_double(bor, wh-1-bor)
 
     float scale = sqrt(srf->w^2 + srf->h^2) / 32;
 
     int   xy_border = 5;
 
     for (int i=0; i<40; ++i){
-        float   alpha = 3 * (.5 + rnd);
+        float   alpha = 1 * (.5 + rnd);
         float   rad = (4 + rnd * rnd * rnd * 200) * scale;
         float   slope = 1 * (1 + 2 * rnd * rnd);
         float   j = rnd;
@@ -30,21 +30,18 @@ void draw_some_dots(SDL_Surface* srf){
 void draw_some_stuff(SDL_Surface* srf) {
     if (srf==0) return;
     
-    initialize_profield  /* not needed if your renderer calls either macro:
-       rt_frame_hyperparams
+    initialize_profield  /* not needed if your renderer calls either:
+       frame_hyperparams()
        framebuffer_scanline() */
 
     SDL_LockSurface(srf);
-        propix_fill(srf, vec3(.4,.7,1)*.1, 1);
+        propix_fill(srf, vec3(.4,.7,1)*.1, .1);
         draw_some_dots(srf);
-        aadot::draw(
-            1,1,vec3(1,1,1),1,1
-        );
     SDL_UnlockSurface(srf);
 
     bool scaled = false;
     bool gamma = false;
-    propix_frame(scaled, gamma);
+    progressive_frame(scaled, gamma);
 }
 
 int main(int argc, char *argv[]) {

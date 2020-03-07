@@ -33,7 +33,7 @@ bool        quit = false;
 bool        bool_initialize_profield = true;
 bool        bool_gamma = false;
 int         desi, srci;
-float       rad, activ_max;
+float       rad;
 
 void get_pointers(SDL_Surface* srf) {
     gsurf = srf;
@@ -129,7 +129,7 @@ void scanline(const int j, const bool gamma = false){
         }
 }
 
-void propix_frame(int frame, bool scaled = false, bool gamma = false, int update_mod = 1) {
+void progressive_frame(bool scaled = false, bool gamma = false, int frame = 0, int update_mod = 1) {
     for (int j = 0; j < gh; j++) {
         scanline(j, gamma);
     }
