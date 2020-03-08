@@ -19,19 +19,21 @@ namespace aadot {
         
         //salpha = 1 / rad;                         // clamp prevents artifact
         //slope = slope < salpha ? salpha : slope;  //
-
+        
+        y -= .5;
         int y0 = ffmax(y-rad, 0);
         int y1 = ffmin(y+rad+.5, hm);
 
+        x -= .5;
         int x0 = ffmax(x-rad, 0);
         int x1 = ffmin(x+rad+.5, wm);
 
         float dy = (y0-y)*slope;
         const float dxleft = (x0-x)*slope;
 
-        const float cone_h = slope*(rad+.25);     //pre-inverted, imagined as cone \/
+        const float cone_h = slope*(rad+.25);     // +.25 is halfway between cone tip and pixel edge.  height average basically
         const float coneSq = cone_h*cone_h;      //avoid sqr() at blit corners
-        const float sq = (cone_h-1)*(cone_h-1);  //avoid sqr() in dot center at max brightness
+        const float sq = (cone_h-1)*(cone_h-1);  //avoid sqr() in dot center at max brightness.  don't remember why i made it cone_h-1
         
         #if 0
         std::cout << coneSq << " ";

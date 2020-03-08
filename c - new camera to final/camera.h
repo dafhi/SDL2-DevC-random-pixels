@@ -49,6 +49,9 @@ class camera {
         tReal lens_radius;
 };
 
+#define _args           hittable_list world
+#define _params         world
+
 #include "../common/hyperparams.h"
 
 #endif

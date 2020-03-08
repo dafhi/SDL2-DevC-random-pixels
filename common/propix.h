@@ -8,7 +8,8 @@
 #ifndef PROPIX_H
 #define PROPIX_H
 
-#include "ray.h"
+//#include "ray.h"
+#include "rtweekend.h"
 
     #define propix progressive_pixel
 

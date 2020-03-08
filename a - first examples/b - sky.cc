@@ -1,4 +1,4 @@
-#include "../common/rtweekend.h"
+#include "../common/SDL2 and progressives.h"
 
 vec3 ray_color(const ray& r) {
     vec3 unit_direction = unit_vector(r.direction());

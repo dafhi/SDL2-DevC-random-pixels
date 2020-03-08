@@ -2,19 +2,7 @@
 #define GFX_HEADER_H
 
 #include "general.h"
-
 #include <cmath>
-
-// Constants
-
-const double infinity = std::numeric_limits<double>::infinity();
-const double pi = 3.1415926535897932385;
-
-// Utility
-
-inline tReal degrees_to_radians(const tReal degrees) {
-    return degrees * pi / 180;
-}
 
 inline uint rgba(uchar r, uchar g, uchar b, uchar a){
    return a << 24 | r << 16 | g << 8 | b;
@@ -35,6 +23,7 @@ inline uint rgb_i(float r, float g, float b) {
   return rgb( i255(r), i255(g), i255(b) );
 }
 
+/*
 // 2017 Mar 26 - dafhi
 #define Alpha256(back, fore, a256) \
     (\
@@ -51,6 +40,7 @@ struct image_vars {
 };
 
 #define r255    rnd * 256
+*/
 
 #endif// -------- HEADER_H
 

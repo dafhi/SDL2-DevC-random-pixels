@@ -12,6 +12,9 @@ vec3 ray_color(const ray& r, const hittable& world, int depth) {
     return sky_color(r.d());
 }
 
+#define _args           hittable_list world
+#define _params         world
+    
 #include "../common/hyperparams.h"
 
 int main(int argc, char *argv[]) {

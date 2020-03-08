@@ -12,9 +12,7 @@
 
 //#define show_raytrace_importance_map
 
-bool save_bmp = false; // save render
-
-// ---------- framebuffer
+bool save_bmp = false;
 
 #include <sdl.h>
 
@@ -85,7 +83,7 @@ void create_window(int w, int h){
             sum = new propix[pitchBy * gh];\
             bool_initialize_profield = false;\
             propix_fill(gsurf, vec3(0,0,0), .001);\
-            rad = sqrt(gw * gw + gh * gh) / 35;\
+            rad = sqrt(gw * gw + gh * gh) / 128;\
         }\
 
 #define let_OS_breathe(input_1, upd_modu)\

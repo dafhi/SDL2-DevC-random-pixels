@@ -4,6 +4,7 @@
 #define RAY_H
 
 #include "vec3.h"
+#include "general.h"
 
 class ray {
     public:
