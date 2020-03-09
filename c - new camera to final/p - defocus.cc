@@ -58,10 +58,10 @@ int main(int argc, char *argv[]) {
     
     camera cam(w/h, 20, lookfrom, lookat, aperture, dist_to_focus);
 
-    for (int frame = 99; frame >= 0; --frame) {
+    for (int frame = 150; frame >= 0; --frame) {
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         bool scaled = false;
-        frame_hyperparams(frame, cam, world, max_depth, scaled);
+        frame_hyperparams(cam, world, max_depth, scaled);
         if (quit) break;
     }
     final_framebuff_stuff(1000)

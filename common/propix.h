@@ -8,7 +8,6 @@
 #ifndef PROPIX_H
 #define PROPIX_H
 
-//#include "ray.h"
 #include "rtweekend.h"
 
     #define propix progressive_pixel
@@ -19,23 +18,19 @@ class progressive_pixel {
     propix(tReal x=0, tReal y=0, tReal z=0, tReal w=0) { v=vec3(x,y,z); iter = w;}
     propix(const vec3& q, tReal w=1) {v = q; iter = w;}
     propix(const propix& q, tReal w=1) {v = q.v; iter = w;}
-
+    
+    progressive_pixel& operator=( const progressive_pixel& other ) {
+        v = other.v;
+        iter = other.iter;
+        return *this;
+    }
+    
     operator vec3() { return v / iter; }
     const tReal operator[](int i) const { return v[i]; }
 
-    // non-gamma
     operator uint() const { const tReal r = 1/iter; return rgb_i(v[0]*r, v[1]*r, v[2]*r); }
-    //operator uint() const { const tReal r = 1/iter; return rgb_f(v[0]*r, v[1]*r, v[2]*r); }
     uint gamma() const { const tReal r = 1/iter; return rgb_f(v[0]*r, v[1]*r, v[2]*r); }
     
-    inline void calc_activ(const uint new_col) {
-        const int r = ((new_col >> 16) & 255) - ((colp >> 16) & 255);
-        const int g = ((new_col >> 8) & 255) - ((colp >> 8) & 255);
-        const int b = (new_col & 255) - (colp & 255);
-        static const tReal i_dcol_max = 1 / sqrt(255*255*3);
-        activ = activ * .8 + sqrt(r*r + g*g + b*b)*i_dcol_max;
-    }
-
     propix& operator+=(const propix &u) {
         v += u.v;
         iter += u.iter;
@@ -44,9 +39,9 @@ class progressive_pixel {
 
     vec3    v;
     tReal   iter=0;
-    uint    colp=0;
+    uint    colp = 0x808080;
     tReal   activ=0;    // uint rgb delta
-    tReal   imap;       // activ / activ_max
+    tReal   imap=1;       // activ / activ_max
 };
 
 

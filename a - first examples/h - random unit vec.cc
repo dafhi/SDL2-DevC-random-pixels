@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 
     for (int frame = 99; frame >= 0; --frame) {
         bool scaled = false;
-        frame_hyperparams(frame, cam, world, max_depth, scaled);
+        frame_hyperparams(cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         if (quit) break;
 //        SDL_Delay(50);

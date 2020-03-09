@@ -68,9 +68,9 @@ int main(int argc, char *argv[]) {
     tReal vfov = 20;
     camera cam(aspect_ratio, vfov, lookfrom, lookat, aperture, dist_to_focus);
     
-    for (int frame = 40; frame >= 0; --frame) {
+    for (int frame = 130; frame >= 0; --frame) {
         bool scaled = false;
-        frame_hyperparams(frame, cam, world, max_depth, scaled);
+        frame_hyperparams(cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         if (quit) break;
     }

@@ -31,7 +31,7 @@ bool        quit = false;
 bool        bool_initialize_profield = true;
 bool        bool_gamma = false;
 int         desi, srci;
-float       rad;
+float       g_rad;
 
 void get_pointers(SDL_Surface* srf) {
     gsurf = srf;
@@ -83,13 +83,13 @@ void create_window(int w, int h){
             sum = new propix[pitchBy * gh];\
             bool_initialize_profield = false;\
             propix_fill(gsurf, vec3(0,0,0), .001);\
-            rad = sqrt(gw * gw + gh * gh) / 128;\
+            g_rad = sqrt(gw * gw + gh * gh) / 260;\
         }\
 
 #define let_OS_breathe(input_1, upd_modu)\
         if (input_1 % upd_modu == 0) {\
             auto k = SDL_UpdateWindowSurface(window);\
-            if (rnd < .25) SDL_Delay(1);\
+            if (rnd < 1) SDL_Delay(1);\
             SDL_PollEvent(&event);\
             switch (event.type) {\
                 case SDL_QUIT:\

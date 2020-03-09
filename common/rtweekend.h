@@ -14,6 +14,7 @@
 #include <limits>
 #include <memory>
 
+#include "gfx_header.h"
 
 // Usings
 
@@ -40,8 +41,23 @@ inline double clamp(double x, double min, double max) {
     return x;
 }
 
+inline double drand() {
+    // Rolled my own PRNG.  2019 Jan 20  - dafhi (somewhere around that time)
+    // nearly-flat distribution (exactly 2 values are off the average by 1)
+	static uint a = 0, b = 0;
+	const uint max = std::numeric_limits<uint>::max();
+	a *= a;
+	a ^= b;
+	b += 1; // 1,5,9,etc. will hit all possible values.  3,7,11 will miss half
+	return (double)a / max;
+}
+
 inline double random_double() {
+    #if 1
+    return drand();
+    #else
     return rand() / (RAND_MAX + 1.0);
+    #endif
 }
 
 inline double random_double(double min, double max) {
@@ -54,10 +70,11 @@ inline int random_int(int min, int max) {
     return static_cast<int>(random_double(min, max+1));
 }
 
+#define rnd     random_double()
+
 // Common Headers
 
 #include "ray.h"
-#include "gfx_header.h"
 
 vec3 sky_color(const vec3& ray_d) {
     auto t = (unit_vector(ray_d).y() + 1)/2;

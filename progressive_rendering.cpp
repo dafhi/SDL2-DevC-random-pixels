@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     create_window(winw,winh);
     create_surface(w,h);
 
-    update_modulus = 3;
+    update_modulus = 5;
     
     for (int frame = 0; frame < 10; ++frame) {
         bool gamma = false;
