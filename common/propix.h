@@ -38,10 +38,10 @@ class progressive_pixel {
     }
 
     vec3    v;
-    tReal   iter=0;
-    uint    colp = 0x808080;
-    tReal   activ=0;    // uint rgb delta
-    tReal   imap=1;       // activ / activ_max
+    tReal   iter = 0;
+    uint    colp;
+    tReal   activ = 0;    // uint rgb delta
+    tReal   imap = 2;       // initial high importance becomes multi sample
 };
 
 

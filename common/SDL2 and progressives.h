@@ -10,7 +10,7 @@
 
 #include "propix.h"
 
-//#define show_raytrace_importance_map
+//#define show_importance_map
 
 bool save_bmp = false;
 
@@ -83,7 +83,7 @@ void create_window(int w, int h){
             sum = new propix[pitchBy * gh];\
             bool_initialize_profield = false;\
             propix_fill(gsurf, vec3(0,0,0), .001);\
-            g_rad = sqrt(gw * gw + gh * gh) / 260;\
+            g_rad = sqrt(gw * gw + gh * gh) / 90;\
         }\
 
 #define let_OS_breathe(input_1, upd_modu)\
@@ -102,7 +102,7 @@ void create_window(int w, int h){
             }\
         }\
         
-#ifdef show_raytrace_importance_map
+#ifdef show_importance_map
 
     #define pixel_activity(gamma_or_no)\
                     float c = sum[srci+i].imap;\
@@ -127,7 +127,7 @@ void scanline(const int j, const bool gamma = false){
         }
 }
 
-void progressive_frame(bool scaled = false, bool gamma = false, int frame = 0, int update_mod = 1) {
+void show_render(bool scaled = false, bool gamma = false, int frame = 0, int update_mod = 1) {
     for (int j = 0; j < gh; j++) {
         scanline(j, gamma);
     }
@@ -184,5 +184,59 @@ inline void write_pixel(const vec3 color, const int idx, const int samps = 1) {
 //        std::cout << sum[_idx].iter << " " << "" << "\n";
     //std::cout << SDL_GetError();
 //            std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+
+namespace aadot {
+
+    void draw(float x, float y, propix col = vec3(1,1,1), const float rad=5, float slope=1) {
+        static float salpha;
+
+        /* slope = 1 .. 1 pixel aa edge
+           slope = 2 .. 1/2 pixel (sharp)
+           slope = 1/rad .. max blur
+           slope < 1/rad .. rendering artifact */
+
+        //salpha = 1 / rad;                         // clamp prevents artifact
+        //slope = slope < salpha ? salpha : slope;  //
+
+        y -= .5;
+        int y0 = ffmax(y-rad, 0);
+        int y1 = ffmin(y+rad+.5, hm);
+
+        x -= .5;
+        int x0 = ffmax(x-rad, 0);
+        int x1 = ffmin(x+rad+.5, wm);
+
+        float dy = (y0-y)*slope;
+        const float dxleft = (x0-x)*slope;
+
+        const float cone_h = slope*(rad+.25);     // +.25 is halfway between cone tip and pixel edge.  height average basically
+        const float coneSq = cone_h*cone_h;      //avoid sqr() at blit corners
+        const float sq = (cone_h-1)*(cone_h-1);  //avoid sqr() in dot center at max brightness.  don't remember why i made it cone_h-1
+
+        for (int j = y0; j <= y1; j++) {
+            float dx = dxleft;
+            const float dySq = dy*dy;
+            for (int i = x0 + j*pitchBy; i <= x1 + j*pitchBy; i++) {
+                float salpha = dx*dx+dySq;
+                if (salpha<sq) {
+
+                    sum[i] += propix(col*col.iter, col.iter);
+                } else if ( salpha <= coneSq) {
+
+                    salpha = col.iter * (cone_h-sqrt(salpha));
+                    sum[i] += propix(col * salpha, salpha);
+                }
+                dx+=slope;
+            }
+            dy+=slope;
+        }
+
+    }
+
+    float relative_slope(float in, float radius) {
+        return in / radius;
+    }
+
+}
 
 #endif // --- ProgressivePixel_H

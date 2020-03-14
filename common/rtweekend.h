@@ -53,7 +53,7 @@ inline double drand() {
 }
 
 inline double random_double() {
-    #if 1
+    #if 0
     return drand();
     #else
     return rand() / (RAND_MAX + 1.0);

@@ -12,9 +12,9 @@ vec3 ray_color(const ray& r, const hittable& world, int depth) {
     return sky_color(r.d());
 }
 
-#define _args           hittable_list world
-#define _params         world
-    
+    #define _args           hittable_list world //
+    #define _params         world
+
 #include "../common/hyperparams.h"
 
 int main(int argc, char *argv[]) {
@@ -40,12 +40,11 @@ int main(int argc, char *argv[]) {
     world.add(make_shared<sphere>(vec3(0,-100.5,-1), 100));
     camera cam;
 
-    for (int frame = 99; frame >= 0; --frame) {
+    for (int frame = 60; frame >= 0; --frame) {
         bool scaled = false;
         frame_hyperparams(cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         if (quit) break;
-//        SDL_Delay(50);
     }
     final_framebuff_stuff(800) // Delay
 

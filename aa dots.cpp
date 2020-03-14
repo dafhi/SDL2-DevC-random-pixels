@@ -4,7 +4,7 @@
 
 */
 
-#include "common/aadot.h"
+#include "common/SDL2 and progressives.h"
 
 void draw_some_dots(SDL_Surface* srf){
     #define border(wh,bor) random_double(bor, wh-1-bor)
@@ -41,7 +41,7 @@ void draw_some_stuff(SDL_Surface* srf) {
 
     bool scaled = false;
     bool gamma = false;
-    progressive_frame(scaled, gamma);
+    show_render(scaled, gamma);
 }
 
 int main(int argc, char *argv[]) {

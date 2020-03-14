@@ -1,9 +1,7 @@
+// modified from "Ray Tracing in one Weekend"
+
 #ifndef CAMERA_H
 #define CAMERA_H
-
-// Progressive rendering:  Note #include at the end
-
-// modified from "Ray Tracing in one Weekend"
 
 #include "sphere.h"
 
@@ -49,8 +47,8 @@ class camera {
         tReal lens_radius;
 };
 
-#define _args           hittable_list world
-#define _params         world
+    #define _args           hittable_list world
+    #define _params         world
 
 #include "../common/hyperparams.h"
 

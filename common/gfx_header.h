@@ -30,17 +30,12 @@ inline uint rgb_i(float r, float g, float b) {
   return rgb( i255(r), i255(g), i255(b) );
 }
 
-float dcol( uint x,  uint y, const bool fprint = false) {
-    #if 1
+float dcol( uint x,  uint y) {
+//float dcol( uint x,  uint y, const bool fprint = false) {
     int r = ((x >> 16) & 255) - ((y >> 16) & 255);
     int g = ((x >> 8) & 255) - ((y >> 8) & 255) ;
     int b = ((x >> 0) & 255) - ((y >> 0) & 255) ;
-    #else
-    int r = (x >> 16) & 255; r -= (y >> 16) & 255;
-    int g = (x >> 8) & 255; g -= (y >> 8) & 255 ;
-    int b = (x >> 0) & 255; b -= (y >> 0) & 255 ;
-    #endif
-    if (fprint) std::cout qp(r);// << qp(g) << qb(b);
+//    if (fprint) std::cout qp(r);// << qp(g) << qb(b);
     const tReal i_dcol_max = 1 / sqrt(255*255*3);
     return sqrt(r*r+g*g+b*b) * i_dcol_max;
 }

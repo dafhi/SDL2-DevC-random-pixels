@@ -20,7 +20,7 @@ hittable_list random_scene() {
                 } else if (choose_mat < 0.95) {
                     // metal
                     auto albedo = vec3::random(.5, 1);
-                    auto fuzz = random_double(0, .5);
+                    auto fuzz = random_double(.25, .75);
                     objects.add(
                         make_shared<sphere>(center, 0.2, make_shared<metal>(albedo, fuzz)));
                 } else {
@@ -68,14 +68,14 @@ int main(int argc, char *argv[]) {
     tReal vfov = 20;
     camera cam(aspect_ratio, vfov, lookfrom, lookat, aperture, dist_to_focus);
     
-    for (int frame = 130; frame >= 0; --frame) {
+    for (int frame = 50; frame >= 0; --frame) {
         bool scaled = false;
         frame_hyperparams(cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         if (quit) break;
     }
     
-    save_bmp = true;
+//    save_bmp = true;
     final_framebuff_stuff(1000)
 
     return 0;

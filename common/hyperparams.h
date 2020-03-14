@@ -3,32 +3,43 @@
 
 /* -- hyperparams.h - 2020 Mar 7 - by dafhi
 
-        techs
+    ----
 
-    1.  anti-aliased dots.  size reduced over time
-    2.  pixels.             rgb (uint) activity gets extra attention
+      usage:
 
-
-    -- usage
-
-    vec3 ray_color() { .. }
+    vec3 ray_color() { .. }  // from RTIOW
 
     #define _args           vec3 background, hittable_list world //
     #define _params         background, world
 
     #include "common/hyperparams.h"
+
+        ------------------------------------------------------------
+
+    Two drawing techs based upon propix (display pixel) class
+
+    1.  anti-aliased dots.  size reduced over time
+    2.  pixels.             rgb (uint) activity gets extra attention
+
+        ------------------------------------------------------------
+
+    Many other parameters.  Looking for a one-fits-all combination
+
 */
 
-#include "../common/aadot.h"
+#include "../common/SDL2 and progressives.h"
 
-void write_colp(int& imap_frame) {
-    imap_frame++;
+void write_colp(int& frame) {
+    frame++;
     for (int i = -1; i++ < gw*gh-1;) sum[i].colp = sum[i];
 }
 
-void importance_map(int& frame, int update_modulus=1) {
+void rgb_delta_to_importance(int& frame, int update_modulus=1) {
     if (frame % update_modulus == 0) {
+
         if (frame > 0) {
+            // basic preventative measure .. If .colp is "all black", high lum gets attention
+
             float activ_max = 0;
             #if 0
             for (int j = gh; j-- > 0;) {
@@ -46,7 +57,7 @@ void importance_map(int& frame, int update_modulus=1) {
             }
             #else
             for (int i = -1; i++ < gw*gh-1;) {
-                sum[i].activ *= .96;
+                sum[i].activ *= .93;
                 sum[i].activ += dcol(sum[i], sum[i].colp);
                 activ_max = ffmax(activ_max, sum[i].activ);
             }
@@ -69,73 +80,57 @@ void importance_map(int& frame, int update_modulus=1) {
     v = (j + rnd) / (gh);\
     r = cam.get_ray(u, v);\
     samps++;
+    
+void plot_dot(float sj, float si, int frame, float dot_stren, float rad, camera& cam, _args, int max_dep, int _samps) {
+    const float slope = 1 / rad;
+    int _i = si;
+    int _j = sj;
+    int ii = _j*pitchBy+_i;
+    
+    // rejection method
+    if (frame > 1 and sum[ii].imap < .2 and rnd < .6) {
+    //if (frame > 1 and sum[ii].imap < .02 and rnd < .985) {
 
-void low_disc_dotloop(int& imap_frame, double& dots_alpha_dilution, float rad, camera cam, _args, int max_depth, float freq = .7) {
-    float box_len = rad / freq;
-    if (imap_frame > 2)std::cerr << ".. Dots ";
-    float dot_strength = 4 * (1 - dots_alpha_dilution);
-    float slope = 1 / rad;
-    for (float j = -rnd*box_len; j < gh; j+=box_len) {
-        for (float i = -rnd*box_len; i < gw; i+=box_len) {
-            float sj = j + rnd*box_len;
-            float si = i + rnd*box_len;
-            if (sj >= 0 & sj < gh & si >= 0 & si < gw) {
-                int _i = si;
-                int _j = sj;
-                int ii = _j*pitchBy+_i;
-                if (imap_frame > 0 and sum[ii].imap < .85 and rnd < .65) {
+        // low pixel activity - do nothing
 
-                    // low pixel activity - do nothing
+    } else {
 
-                } else {
-                
-                    r_uv_samps
-                    first_ray(_i,_j)
-                    auto color = ray_color(r, _params, max_depth);
-                    for (int k=1; k++ < sum[ii].imap * 4;) {
-                        first_ray(_i,_j)
-                        color += ray_color(r, _params, max_depth);
-                    }
-                    aadot::draw(si,sj,propix(color/samps,dot_strength),rad,slope);
-                }
-            } else {
-                r_uv_samps
-                first_ray(si,sj)
-                auto color = ray_color(r, _params, max_depth);
-                aadot::draw(si,sj,propix(color,dot_strength),rad,slope);
-            }
+        r_uv_samps
+        first_ray(_i,_j)
+        auto color = ray_color(r, _params, max_dep);
+        for (int k=1; k++ < sum[ii].imap * _samps;) {
+            first_ray(_i,_j)
+            color += ray_color(r, _params, max_dep);
+        }
+        aadot::draw(si,sj,propix(color/samps,dot_stren),rad,slope);
+    }
+}
+
+void low_disc_dotloop(int& frame, double& dots_alpha_dilution, float rad, camera cam, _args, int max_depth, float freq = .7, int samps = 5) {
+    if (frame > 2)std::cerr << ".. Dots ";
+    const float dot_stren = 1.3 * (1 - dots_alpha_dilution);
+    const float box_len = rad / freq;
+    const float border = .5;
+    const int   cj = gh / box_len - border;
+    const int   ci = gw / box_len - border;
+    const float js = (gh - cj * box_len) / 2, je = gh - .5*box_len - js;
+    const float is = (gw - ci * box_len) / 2, ie = gw - .5*box_len - is;
+    for (float j = js; j < je; j += box_len) {
+        for (float i = is; i < ie; i += box_len) {
+            plot_dot(
+                j + rnd*box_len,
+                i + rnd*box_len,
+                frame, dot_stren, rad, cam, _params, max_depth, samps);
         }
     }  dots_alpha_dilution *= .996;
 }
 
-void colp_prep(double& da_dilut, int& imap_frame, camera& cam, _args, int max_depth) {
-    low_disc_dotloop(imap_frame, da_dilut, g_rad*4, cam, _params, max_depth, 1.1);
-    importance_map(imap_frame);
-    low_disc_dotloop(imap_frame, da_dilut, g_rad*3, cam, _params, max_depth, .8);
-    importance_map(imap_frame, 1);
-}
-
-bool draw_some_dots(camera& cam, _args, int max_depth) {
-    static double dots_alpha_dilution = .98;
-    if (g_rad < .7071) g_rad = .7071;
-    if (dots_alpha_dilution > .2) {
-        static int imap_frame;
-        if (imap_frame < 1) {
-            colp_prep(dots_alpha_dilution, imap_frame, cam, _params, max_depth);
-        }
-        static float freq = .4*(2.5 - 1/imap_frame);
-        low_disc_dotloop(imap_frame, dots_alpha_dilution, g_rad, cam, _params, max_depth, freq);
-        importance_map(imap_frame, 1);
-        g_rad *= .94;
-        return true;
-    }
-    return false;
-}
+bool show_imap_scaled;
 
 const int   strat = 15;
 const float enforced_rate = (float)1 / strat;
 
-void draw_some_pixels(camera& cam, _args, int max_depth) {
+void draw_some_pixels(camera& cam, _args, int max_depth, int _samps = 4) {
     std::cerr << ".. pixels ";
     for (int j = gh; --j >= 0;) {
         framebuffer_scanline(j)
@@ -144,7 +139,7 @@ void draw_some_pixels(camera& cam, _args, int max_depth) {
             if (sum[srci+i].imap >= enforced_rate) {
                 first_ray(i,j)
                 auto color = ray_color(r, _params, max_depth);
-                for (int k=1; k++ < sum[srci+i].imap * 4;) {
+                for (int k=1; k++ < sum[srci+i].imap * _samps;) {
                     first_ray(i,j)
                     color += ray_color(r, _params, max_depth);
                 }
@@ -157,19 +152,69 @@ void draw_some_pixels(camera& cam, _args, int max_depth) {
         }
         even_more_framebu___you_get_the_point(j, update_modulus, bool_gamma)
     }
-    static int imap_frame = 1;
-    importance_map(imap_frame, 2);
+}
+
+void colp_prep(double& da_dilut, int& imap_frame, camera& cam, _args, int max_depth) {
+
+    // first 2 passes create rgb delta.
+    // fast (big dots) so user doesn't have to wait long for initial result.
+
+    // with big dots instead of pixels, "colp" can get at least a rough image
+    // for a good importance map to kick off subsequent frames.
+
+    // in SDL2_and_displays.h, uncomment #define show_importance_map
+    // then render.  reduce freq to 0.8 and re-render
+    
+    int samps = 5;
+    float freq = 1.2;
+    
+    std::cerr << "rough sketch\n";
+
+    low_disc_dotloop(imap_frame, da_dilut, g_rad*1.2, cam, _params, max_depth, freq, samps);
+    write_colp(imap_frame);
+    
+    show_render(show_imap_scaled, bool_gamma, 0);
+
+    std::cerr << "importance map calc\n";
+
+    // A lousy 2nd pass is good enough to establish a decent map
+    //draw_some_pixels(cam, _params, max_depth, 1);
+    low_disc_dotloop(imap_frame, da_dilut, g_rad*1.4, cam, _params, max_depth, freq*1.1, samps);
+    rgb_delta_to_importance(imap_frame, 1); // also utilizes write_colp()
+    
+    show_render(show_imap_scaled, bool_gamma, 0);
+    //SDL_Delay(1000);
+}
+
+bool draw_some_dots(camera& cam, _args, int max_depth) {
+    static double dots_alpha_dilution = .99;
+    if (g_rad < .7071) g_rad = .7071;
+    if (dots_alpha_dilution > .58) {
+        static int imap_frame;
+        if (imap_frame < 1) {
+            colp_prep(dots_alpha_dilution, imap_frame, cam, _params, max_depth);
+        }
+        static float freq = 1.3*(2.0 - 1/imap_frame);
+        low_disc_dotloop(imap_frame, dots_alpha_dilution, g_rad, cam, _params, max_depth, freq);
+        rgb_delta_to_importance(imap_frame, 1);
+        g_rad *= .77;
+        return true;
+    }
+    return false;
 }
 
 void frame_hyperparams(camera& cam, _args, int max_depth, bool scaled = false){
     initialize_profield
     update_modulus = gh;
+    bool_gamma = true;
+    show_imap_scaled = scaled; // instructional
     if ( !draw_some_dots(cam, _params, max_depth) ) {
         draw_some_pixels(cam, _params, max_depth);
+        static int imap_frame = 1;
+        rgb_delta_to_importance(imap_frame, 2);
     }
-    bool_gamma = true;
     static int frame;
-    progressive_frame(scaled, bool_gamma, frame);
+    show_render(scaled, bool_gamma, frame);
 }
 
 /*
