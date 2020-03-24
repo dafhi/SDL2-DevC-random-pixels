@@ -88,7 +88,7 @@ void plot_dot(float sj, float si, int frame, float dot_stren, float rad, camera&
     int ii = _j*pitchBy+_i;
     
     // rejection method
-    if (frame > 1 and sum[ii].imap < .2 and rnd < .6) {
+    if (frame > 1 and sum[ii].imap < .03 and rnd < .95) {
     //if (frame > 1 and sum[ii].imap < .02 and rnd < .985) {
 
         // low pixel activity - do nothing
@@ -106,7 +106,7 @@ void plot_dot(float sj, float si, int frame, float dot_stren, float rad, camera&
     }
 }
 
-void low_disc_dotloop(int& frame, double& dots_alpha_dilution, float rad, camera cam, _args, int max_depth, float freq = .7, int samps = 5) {
+void strat_dotloop(int& frame, double& dots_alpha_dilution, float rad, camera cam, _args, int max_depth, float freq = .7, int samps = 5) {
     if (frame > 2)std::cerr << ".. Dots ";
     const float dot_stren = 1.3 * (1 - dots_alpha_dilution);
     const float box_len = rad / freq;
@@ -170,7 +170,7 @@ void colp_prep(double& da_dilut, int& imap_frame, camera& cam, _args, int max_de
     
     std::cerr << "rough sketch\n";
 
-    low_disc_dotloop(imap_frame, da_dilut, g_rad*1.2, cam, _params, max_depth, freq, samps);
+    strat_dotloop(imap_frame, da_dilut, g_rad*1.4, cam, _params, max_depth, freq, samps);
     write_colp(imap_frame);
     
     show_render(show_imap_scaled, bool_gamma, 0);
@@ -179,7 +179,7 @@ void colp_prep(double& da_dilut, int& imap_frame, camera& cam, _args, int max_de
 
     // A lousy 2nd pass is good enough to establish a decent map
     //draw_some_pixels(cam, _params, max_depth, 1);
-    low_disc_dotloop(imap_frame, da_dilut, g_rad*1.4, cam, _params, max_depth, freq*1.1, samps);
+    strat_dotloop(imap_frame, da_dilut, g_rad*1.4, cam, _params, max_depth, freq*1.1, samps);
     rgb_delta_to_importance(imap_frame, 1); // also utilizes write_colp()
     
     show_render(show_imap_scaled, bool_gamma, 0);
@@ -194,10 +194,10 @@ bool draw_some_dots(camera& cam, _args, int max_depth) {
         if (imap_frame < 1) {
             colp_prep(dots_alpha_dilution, imap_frame, cam, _params, max_depth);
         }
-        static float freq = 1.3*(2.0 - 1/imap_frame);
-        low_disc_dotloop(imap_frame, dots_alpha_dilution, g_rad, cam, _params, max_depth, freq);
+        static float freq = .26*(2.0 - 1/imap_frame);
+        strat_dotloop(imap_frame, dots_alpha_dilution, g_rad, cam, _params, max_depth, freq);
         rgb_delta_to_importance(imap_frame, 1);
-        g_rad *= .77;
+        g_rad *= .9;
         return true;
     }
     return false;
