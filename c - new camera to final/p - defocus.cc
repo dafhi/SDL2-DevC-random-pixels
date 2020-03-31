@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     
     camera cam(w/h, 20, lookfrom, lookat, aperture, dist_to_focus);
 
-    for (int frame = 15; frame >= 0; --frame) {
+    for (int frame = 80; frame >= 0; --frame) {
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
         bool scaled = false;
         frame_hyperparams(cam, world, max_depth, scaled);
