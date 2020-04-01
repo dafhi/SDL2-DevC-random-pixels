@@ -41,7 +41,7 @@ class progressive_pixel {
     tReal   iter = 0;
     uint    colp;
     tReal   activ = 0;    // uint rgb delta
-    tReal   imap = 2;       // initial high importance becomes multi sample
+    tReal   imap = .2;       // initial high importance becomes multi sample
 };
 
 
