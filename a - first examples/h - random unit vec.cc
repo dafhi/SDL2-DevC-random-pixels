@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     world.add(make_shared<sphere>(vec3(0,-100.5,-1), 100));
     camera cam;
 
-    for (int frame = 80; frame >= 0; --frame) {
+    for (int frame = 50; frame >= 0; --frame) {
         bool scaled = false;
         frame_hyperparams(cam, world, max_depth, scaled);
         std::cerr << "\rframes remaining:  " << frame << " " << std::flush;
