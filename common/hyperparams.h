@@ -29,7 +29,7 @@
 
 #include "../common/SDL2 and progressives.h"
 
-const int g_frame__importance_trigger = 25;
+const int g_frame__importance_trigger = 11;
 
 void write_colp(int& frame) {
     for (int i = -1; i++ < gw*gh-1;) sum[i].colp = sum[i];
@@ -129,7 +129,7 @@ void plot_dot(float sj, float si, int frame, float dot_stren, float rad, camera&
 
 void strat_dotloop(int& frame, double& dots_alpha_dilution, float rad, camera cam, _args, int max_depth, float freq = .7, int samps = 5) {
     if (frame > 2)std::cerr << ".. Dots ";
-    const float dot_stren = 4 * (1 - dots_alpha_dilution);
+    const float dot_stren = 26 * (1 - dots_alpha_dilution);
     const float box_len = rad / freq;
     const float border = .5;
     const int   cj = gh / box_len - border;
@@ -145,7 +145,7 @@ void strat_dotloop(int& frame, double& dots_alpha_dilution, float rad, camera ca
         }
     }  dots_alpha_dilution *= .996;
     //g_rad *= frame < g_frame__importance_trigger ? .94 : .96;
-    g_rad *= .89;
+    g_rad *= .85;
 }
 
 bool show_imap_scaled;
@@ -153,14 +153,15 @@ bool show_imap_scaled;
 bool draw_some_dots(camera& cam, _args, int max_depth) {
     static double dots_alpha_dilution = .99;
     if (g_rad < .7071) g_rad = .7071;
-    if (dots_alpha_dilution > .58) {
-        static int imap_frame;
+    //if (dots_alpha_dilution > .89) {
+    static int imap_frame;
+    if (imap_frame <= g_frame__importance_trigger) {
         const int imap_update_modulus = 1;
         //static float _freq = g_rad;
         
         float freq =
             imap_frame <= g_frame__importance_trigger ?
-                .55 : .7;
+                .45 : .25;
         strat_dotloop(imap_frame, dots_alpha_dilution, g_rad, cam, _params, max_depth, freq);
         rgb_delta_to_importance(imap_frame, imap_update_modulus);
         return true;
@@ -174,11 +175,13 @@ void draw_some_pixels(camera& cam, _args, int max_depth, int _samps = 4) {
     for (int j = gh; --j >= 0;) {
         framebuffer_scanline(j)
         for (int i = 0; i < gw; ++i) {
+//            cond_print = j == 200 and i == 300;
             r_uv_samps
             if (sum[srci+i].imap >= enforced_rate) {
                 first_ray(i,j)
                 auto color = ray_color(r, _params, max_depth);
-                for (int k=1; k++ < sum[srci+i].imap * _samps;) {
+//                for (int k=.99+rnd; k++ < 0;) {
+                for (int k=.99+rnd; k++ < sum[srci+i].imap * _samps;) {
                     first_ray(i,j)
                     color += ray_color(r, _params, max_depth);
                 }
